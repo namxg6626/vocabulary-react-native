@@ -7,13 +7,19 @@ import {LargeInput} from './components/LargeInput';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Colors} from '@theme/colors';
 
+type AuthMode = 'signin' | 'signup';
 export interface IAuthScreenProps {}
 
 export const AuthScreen: FC<IAuthScreenProps> = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>('signin');
 
   const handleEyeClick = () => {
     setIsShowPassword(v => !v);
+  };
+
+  const handleSwitchAuthMode = () => {
+    setAuthMode(v => (v === 'signin' ? 'signup' : 'signin'));
   };
 
   const renderGuestRow = () => {
@@ -38,7 +44,7 @@ export const AuthScreen: FC<IAuthScreenProps> = () => {
 
   const renderWellcome = () => {
     return (
-      <Box mb={widthPercentageToDP(16)}>
+      <Box mb={widthPercentageToDP(authMode === 'signin' ? 16 : 8)}>
         <Heading size={'3xl'}>Wellcome</Heading>
         <Text color={Colors.textSecondary} fontSize={'xl'}>
           Are you ready to learn
@@ -86,14 +92,55 @@ export const AuthScreen: FC<IAuthScreenProps> = () => {
             </Pressable>
           }
         />
+        {authMode === 'signup' && (
+          <LargeInput
+            placeholder="Re-password"
+            type={isShowPassword ? undefined : 'password'}
+            iconBgColor={'danger.500'}
+            renderIconComponent={() => (
+              <IonIcons
+                name="lock-closed"
+                color={Colors.gumental}
+                size={widthPercentageToDP(6)}
+              />
+            )}
+            InputRightElement={
+              <Pressable p={widthPercentageToDP(2)} onPress={handleEyeClick}>
+                <IonIcons
+                  style={{marginRight: widthPercentageToDP(2)}}
+                  name={isShowPassword ? 'eye-off' : 'eye'}
+                  color={Colors.textSecondary}
+                  size={widthPercentageToDP(6)}
+                />
+              </Pressable>
+            }
+          />
+        )}
       </VStack>
     );
   };
 
   const renderButtons = () => {
     return (
-      <VStack space={widthPercentageToDP(16)}>
-        <CustomButton>Sign in</CustomButton>
+      <VStack space={widthPercentageToDP(4)}>
+        <CustomButton>
+          {authMode === 'signin' ? 'Sign in' : 'Sign up'}
+        </CustomButton>
+        <Text
+          mb={widthPercentageToDP(2)}
+          color={Colors.textSecondary}
+          textAlign={'center'}
+          fontSize="lg"
+          fontStyle="italic">
+          Or
+        </Text>
+        <CustomButton
+          backgroundColor={'success.700'}
+          onPress={handleSwitchAuthMode}>
+          {authMode === 'signin'
+            ? "Don't have any account"
+            : 'Already have an account?'}
+        </CustomButton>
       </VStack>
     );
   };
