@@ -1,11 +1,22 @@
 import React from 'react';
-import {FC, useState} from 'react';
+import {FC, useState, useEffect} from 'react';
 import {Text, Box, HStack, Heading, VStack, Pressable} from 'native-base';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {Screen, CustomButton} from '@components/index';
 import {LargeInput} from './components/LargeInput';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Colors} from '@theme/colors';
+import {SIGN_IN, SIGN_UP} from './query';
+import {useMutation} from '@apollo/client';
+import {useForm, Controller} from 'react-hook-form';
+import * as validationSchema from './validationSchema';
+import {yupResolver} from '@hookform/resolvers/yup';
+
+type AuthFormValues = {
+  email: string;
+  password: string;
+  repassword?: string;
+};
 
 type AuthMode = 'signin' | 'signup';
 export interface IAuthScreenProps {}
@@ -13,6 +24,39 @@ export interface IAuthScreenProps {}
 export const AuthScreen: FC<IAuthScreenProps> = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('signin');
+  const [signInMutation, {data: signInData}] = useMutation(SIGN_IN);
+  const [signUpMutation, {data: signUpDate}] = useMutation(SIGN_UP);
+
+  const {
+    control,
+    formState: {errors},
+    handleSubmit: hookFormHandleSubmit,
+  } = useForm<AuthFormValues>({
+    resolver: yupResolver(
+      authMode === 'signin' ? validationSchema.signIn : validationSchema.signUp,
+    ),
+  });
+
+  const handleSubmit = (value: AuthFormValues) => {
+    delete value.repassword;
+    if (authMode === 'signin') {
+      signInMutation({
+        variables: {
+          signInInput: value,
+        },
+        onCompleted: data => {
+          console.log(data);
+        },
+        onError: error => {
+          console.error(error);
+        },
+      });
+    } else {
+      signUpMutation({
+        variables: {signUpInput: value},
+      });
+    }
+  };
 
   const handleEyeClick = () => {
     setIsShowPassword(v => !v);
@@ -21,6 +65,10 @@ export const AuthScreen: FC<IAuthScreenProps> = () => {
   const handleSwitchAuthMode = () => {
     setAuthMode(v => (v === 'signin' ? 'signup' : 'signin'));
   };
+
+  useEffect(() => {
+    console.log(signInData);
+  }, [signInData]);
 
   const renderGuestRow = () => {
     return (
@@ -59,61 +107,98 @@ export const AuthScreen: FC<IAuthScreenProps> = () => {
   const renderFields = () => {
     return (
       <VStack mb={widthPercentageToDP(16)} space={widthPercentageToDP(10)}>
-        <LargeInput
-          placeholder="Email"
-          iconBgColor="amber.400"
-          renderIconComponent={() => (
-            <IonIcons
-              name="person"
-              color={Colors.gumental}
-              size={widthPercentageToDP(6)}
-            />
-          )}
-        />
-        <LargeInput
-          placeholder="Password"
-          type={isShowPassword ? undefined : 'password'}
-          iconBgColor={'danger.500'}
-          renderIconComponent={() => (
-            <IonIcons
-              name="lock-closed"
-              color={Colors.gumental}
-              size={widthPercentageToDP(6)}
-            />
-          )}
-          InputRightElement={
-            <Pressable p={widthPercentageToDP(2)} onPress={handleEyeClick}>
-              <IonIcons
-                style={{marginRight: widthPercentageToDP(2)}}
-                name={isShowPassword ? 'eye-off' : 'eye'}
-                color={Colors.textSecondary}
-                size={widthPercentageToDP(6)}
-              />
-            </Pressable>
-          }
-        />
-        {authMode === 'signup' && (
-          <LargeInput
-            placeholder="Re-password"
-            type={isShowPassword ? undefined : 'password'}
-            iconBgColor={'danger.500'}
-            renderIconComponent={() => (
-              <IonIcons
-                name="lock-closed"
-                color={Colors.gumental}
-                size={widthPercentageToDP(6)}
-              />
-            )}
-            InputRightElement={
-              <Pressable p={widthPercentageToDP(2)} onPress={handleEyeClick}>
+        <Controller
+          name="email"
+          control={control}
+          render={({field: {onChange, onBlur, value}}) => (
+            <LargeInput
+              isInvalid={'email' in errors}
+              errorMessage={errors.email?.message}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              placeholder="Email"
+              iconBgColor="amber.400"
+              renderIconComponent={() => (
                 <IonIcons
-                  style={{marginRight: widthPercentageToDP(2)}}
-                  name={isShowPassword ? 'eye-off' : 'eye'}
-                  color={Colors.textSecondary}
+                  name="person"
+                  color={Colors.gumental}
                   size={widthPercentageToDP(6)}
                 />
-              </Pressable>
-            }
+              )}
+            />
+          )}
+        />
+
+        <Controller
+          name="password"
+          control={control}
+          render={({field: {onChange, onBlur, value}}) => (
+            <LargeInput
+              isInvalid={'password' in errors}
+              errorMessage={errors.password?.message}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              placeholder="Password"
+              type={isShowPassword ? undefined : 'password'}
+              iconBgColor={'danger.500'}
+              renderIconComponent={() => (
+                <IonIcons
+                  name="lock-closed"
+                  color={Colors.gumental}
+                  size={widthPercentageToDP(6)}
+                />
+              )}
+              InputRightElement={
+                <Pressable p={widthPercentageToDP(2)} onPress={handleEyeClick}>
+                  <IonIcons
+                    style={{marginRight: widthPercentageToDP(2)}}
+                    name={isShowPassword ? 'eye-off' : 'eye'}
+                    color={Colors.textSecondary}
+                    size={widthPercentageToDP(6)}
+                  />
+                </Pressable>
+              }
+            />
+          )}
+        />
+
+        {authMode === 'signup' && (
+          <Controller
+            name="repassword"
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <LargeInput
+                isInvalid={'repassword' in errors}
+                errorMessage={errors.repassword?.message}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                placeholder="Re-password"
+                type={isShowPassword ? undefined : 'password'}
+                iconBgColor={'danger.500'}
+                renderIconComponent={() => (
+                  <IonIcons
+                    name="lock-closed"
+                    color={Colors.gumental}
+                    size={widthPercentageToDP(6)}
+                  />
+                )}
+                InputRightElement={
+                  <Pressable
+                    p={widthPercentageToDP(2)}
+                    onPress={handleEyeClick}>
+                    <IonIcons
+                      style={{marginRight: widthPercentageToDP(2)}}
+                      name={isShowPassword ? 'eye-off' : 'eye'}
+                      color={Colors.textSecondary}
+                      size={widthPercentageToDP(6)}
+                    />
+                  </Pressable>
+                }
+              />
+            )}
           />
         )}
       </VStack>
@@ -123,7 +208,7 @@ export const AuthScreen: FC<IAuthScreenProps> = () => {
   const renderButtons = () => {
     return (
       <VStack space={widthPercentageToDP(4)}>
-        <CustomButton>
+        <CustomButton onPress={hookFormHandleSubmit(handleSubmit)}>
           {authMode === 'signin' ? 'Sign in' : 'Sign up'}
         </CustomButton>
         <Text

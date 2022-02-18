@@ -11,18 +11,28 @@
 import React from 'react';
 import {NativeBaseProvider, extendTheme} from 'native-base';
 import {AuthScreen} from './src/screens/Auth';
+import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 
-const config = {
+const nativebaseConfig = {
   useSystemColorMode: false,
   initialColorMode: 'dark',
 };
-const theme = extendTheme({config});
+const theme = extendTheme({config: nativebaseConfig});
+const apolloClient = new ApolloClient({
+  uri: 'http://localhost:3000/graphql',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  cache: new InMemoryCache(),
+});
 
 const App = () => {
   return (
-    <NativeBaseProvider theme={theme}>
-      <AuthScreen />
-    </NativeBaseProvider>
+    <ApolloProvider client={apolloClient}>
+      <NativeBaseProvider theme={theme}>
+        <AuthScreen />
+      </NativeBaseProvider>
+    </ApolloProvider>
   );
 };
 
