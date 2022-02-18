@@ -10,8 +10,9 @@
 
 import React from 'react';
 import {NativeBaseProvider, extendTheme} from 'native-base';
-import {AuthScreen} from './src/screens/Auth';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+import {NavigationContainer} from '@react-navigation/native';
+import {MainStack} from './src/navigation/MainStack';
 
 const nativebaseConfig = {
   useSystemColorMode: false,
@@ -30,7 +31,9 @@ const App = () => {
   return (
     <ApolloProvider client={apolloClient}>
       <NativeBaseProvider theme={theme}>
-        <AuthScreen />
+        <NavigationContainer>
+          <MainStack />
+        </NavigationContainer>
       </NativeBaseProvider>
     </ApolloProvider>
   );
