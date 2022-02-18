@@ -11,6 +11,7 @@ import {useMutation} from '@apollo/client';
 import {useForm, Controller} from 'react-hook-form';
 import * as validationSchema from './validationSchema';
 import {yupResolver} from '@hookform/resolvers/yup';
+import type {InStackScreenProps} from '@navigation/navigation';
 
 type AuthFormValues = {
   email: string;
@@ -19,13 +20,13 @@ type AuthFormValues = {
 };
 
 type AuthMode = 'signin' | 'signup';
-export interface IAuthScreenProps {}
 
-export const AuthScreen: FC<IAuthScreenProps> = () => {
+export const AuthScreen: FC<InStackScreenProps<'Auth'>> = ({navigation}) => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('signin');
+
   const [signInMutation, {data: signInData}] = useMutation(SIGN_IN);
-  const [signUpMutation, {data: signUpDate}] = useMutation(SIGN_UP);
+  const [signUpMutation, {data: _signUpDate}] = useMutation(SIGN_UP);
 
   const {
     control,
@@ -83,7 +84,7 @@ export const AuthScreen: FC<IAuthScreenProps> = () => {
           backgroundColor={'tertiary.300'}
           borderRadius={widthPercentageToDP(3.5)}
         />
-        <Pressable onPress={() => console.log('Hi there')}>
+        <Pressable onPress={() => navigation.navigate('Dashboard' as any)}>
           <Text textDecorationLine={'underline'}>{'Continue as guest ->'}</Text>
         </Pressable>
       </HStack>
