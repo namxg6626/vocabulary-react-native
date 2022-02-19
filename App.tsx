@@ -9,23 +9,17 @@
  */
 
 import React from 'react';
-import {NativeBaseProvider, extendTheme} from 'native-base';
-import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+import {NativeBaseProvider, Text} from 'native-base';
+import {ApolloProvider} from '@apollo/client';
 import {NavigationContainer} from '@react-navigation/native';
-import {MainStack} from './src/navigation/MainStack';
 
-const nativebaseConfig = {
-  useSystemColorMode: false,
-  initialColorMode: 'dark',
-};
-const theme = extendTheme({config: nativebaseConfig});
-const apolloClient = new ApolloClient({
-  uri: 'http://localhost:3000/graphql',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  cache: new InMemoryCache(),
-});
+import {MainStack} from './src/navigation/MainStack';
+import {apolloClient} from './apollo.client';
+import {theme} from '@theme/index';
+
+// make things are identical on almost devices
+(Text as any).defaultProps = {};
+(Text as any).defaultProps.allowFontScaling = false;
 
 const App = () => {
   return (
