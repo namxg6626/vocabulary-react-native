@@ -26,6 +26,7 @@ export const AuthScreen: FC<InStackScreenProps<'Auth'>> = ({navigation}) => {
   const [authMode, setAuthMode] = useState<AuthMode>('signin');
 
   const [signInMutation, {data: signInData}] = useMutation(SIGN_IN);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [signUpMutation, {data: _signUpDate}] = useMutation(SIGN_UP);
 
   const {
@@ -67,6 +68,10 @@ export const AuthScreen: FC<InStackScreenProps<'Auth'>> = ({navigation}) => {
     setAuthMode(v => (v === 'signin' ? 'signup' : 'signin'));
   };
 
+  const gotoDashboardAsGuest = () => {
+    navigation.navigate('Dashboard', {isGuest: true});
+  };
+
   useEffect(() => {
     console.log(signInData);
   }, [signInData]);
@@ -84,7 +89,7 @@ export const AuthScreen: FC<InStackScreenProps<'Auth'>> = ({navigation}) => {
           backgroundColor={'tertiary.300'}
           borderRadius={widthPercentageToDP(3.5)}
         />
-        <Pressable onPress={() => navigation.navigate('Dashboard' as any)}>
+        <Pressable onPress={gotoDashboardAsGuest}>
           <Text textDecorationLine={'underline'}>{'Continue as guest ->'}</Text>
         </Pressable>
       </HStack>
