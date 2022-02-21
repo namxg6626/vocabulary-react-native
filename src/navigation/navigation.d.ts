@@ -5,6 +5,7 @@ type MainStackParamList = {
   Dashboard: {
     isGuest?: boolean;
   };
+  AddNewWord: undefined;
 };
 
 export type InStackScreenProps<

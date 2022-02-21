@@ -5,4 +5,5 @@ export enum Colors {
   parisGreen = '#3fd598',
   lightningYellow = '#ffc422',
   pastelOrange = '#ff974a',
+  charcoalGray = '#404040',
 }

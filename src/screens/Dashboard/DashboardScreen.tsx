@@ -25,6 +25,7 @@ const SPACING = widthPercentageToDP(5);
 
 export const DashboardScreen: FC<InStackScreenProps<'Dashboard'>> = ({
   route,
+  navigation,
 }) => {
   const [helloWidth, setHelloWidth] = useState(0);
   const helloHeight = (180 / 320) * helloWidth;
@@ -83,6 +84,7 @@ export const DashboardScreen: FC<InStackScreenProps<'Dashboard'>> = ({
         <VStack space={SPACING}>
           <HStack space={SPACING} alignItems="stretch">
             <LargeColorizedButton
+              onPress={() => navigation.navigate('AddNewWord')}
               $bgColor={Colors.parisGreen}
               $textContent1="Add new"
               $textContent2="word"
@@ -141,7 +143,7 @@ export const DashboardScreen: FC<InStackScreenProps<'Dashboard'>> = ({
   };
 
   return (
-    <Screen>
+    <Screen enableStatusBar>
       <VStack space={SPACING}>
         {renderHello()}
         {renderButtons()}
