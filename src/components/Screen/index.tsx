@@ -13,15 +13,15 @@ export interface IScreenProps {
 export const Screen: FC<IScreenProps> = ({
   children,
   disableSafeArea,
-  enableStatusBar,
+  enableStatusBar = true,
 }) => {
   return (
     <Box
-      pt={Platform.OS === 'android' ? 4 : 0}
+      pt={Platform.OS === 'android' ? 12 : 8}
       px={widthPercentageToDP(6)}
       backgroundColor={Colors.gumental}
       flex={1}>
-      <StatusBar hidden={!enableStatusBar} />
+      <StatusBar hidden={!enableStatusBar} backgroundColor={Colors.gumental} />
       {disableSafeArea ? children : <SafeAreaView>{children}</SafeAreaView>}
     </Box>
   );
