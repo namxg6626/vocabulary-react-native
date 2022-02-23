@@ -21,7 +21,7 @@ export const LargeColorizedButton: FC<ILargeColorizedButtonProps> = ({
 }) => {
   return (
     <Box flex={1}>
-      <Pressable {...props} onPress={() => console.log('hello')}>
+      <Pressable {...props}>
         <VStack
           p={4}
           backgroundColor={$bgColor}
