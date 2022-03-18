@@ -1,7 +1,7 @@
-import {RxSchema} from 'rxdb';
+import {RxJsonSchema} from 'rxdb';
 import {IWord} from './word.interface';
 
-export const wordSchema = new RxSchema<IWord>({
+export const wordSchema: RxJsonSchema<IWord> = {
   version: 0,
   title: 'wordSchema',
   primaryKey: 'rxid',
@@ -27,4 +27,4 @@ export const wordSchema = new RxSchema<IWord>({
     },
   },
   required: ['rxid', 'word', 'meaning'],
-});
+};
