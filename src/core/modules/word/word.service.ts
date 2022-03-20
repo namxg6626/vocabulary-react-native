@@ -18,16 +18,16 @@ export class WordService implements BaseService<IWord, WordDto> {
     return this.wordRepository.insert(dto);
   };
 
-  findById = (rxid: string) => {
-    return this.wordRepository.findById(rxid);
+  findById = (rxId: string) => {
+    return this.wordRepository.findById(rxId);
   };
 
-  updateById = (rxid: string, dto: WordDto) => {
-    return this.wordRepository.updateById(rxid, dto);
+  updateById = (rxId: string, dto: WordDto) => {
+    return this.wordRepository.updateById(rxId, dto);
   };
 
-  deleteById = (rxid: string) => {
-    return this.wordRepository.deleteById(rxid);
+  deleteById = (rxId: string) => {
+    return this.wordRepository.deleteById(rxId);
   };
 
   getAllDocuments = () => {

@@ -26,11 +26,19 @@ export class AddNewWordController extends React.Component<
   }
 
   addNewWord = async (dto: WordDto) => {
-    const newWord = await this.wordService.insert(dto);
-    return newWord;
+    return await this.wordService.insert(dto);
+  };
+
+  getAllWords = async () => {
+    return await this.wordService.getAllDocuments();
   };
 
   render() {
-    return <AddNewWordScreen addNewWord={this.addNewWord} />;
+    return (
+      <AddNewWordScreen
+        addNewWord={this.addNewWord}
+        getAllWords={this.getAllWords}
+      />
+    );
   }
 }

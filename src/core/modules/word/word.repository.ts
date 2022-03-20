@@ -8,17 +8,17 @@ import _ from 'lodash';
 import {v4 as uuid} from 'uuid';
 
 export class WordRepository implements BaseRepository<IWord, WordDto> {
-  private _Word: RxCollection<IWord> | null = null;
-
   constructor(wordCollection?: RxCollection<IWord>) {
     if (wordCollection) {
       this.Word = wordCollection;
     }
   }
 
-  private get now() {
+  private static get now() {
     return dayjs();
   }
+
+  private _Word: RxCollection<IWord> | null = null;
 
   private get Word() {
     if (this._Word) {
@@ -46,15 +46,15 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
 
   updateById = async (rxid: string, dto: WordDto) => {
     const query = this.Word.findOne().where('rxid').eq(rxid);
-    return query.update({...dto, updatedAt: this.now.toISOString()});
+    return query.update({...dto, updatedAt: WordRepository.now.toISOString()});
   };
 
   insert = async (dto: WordDto) => {
     return this.Word.insert({
       ...dto,
       rxid: uuid(),
-      createdAt: this.now.toISOString(),
-      updatedAt: this.now.toISOString(),
+      createdAt: WordRepository.now.toISOString(),
+      updatedAt: WordRepository.now.toISOString(),
     });
   };
 

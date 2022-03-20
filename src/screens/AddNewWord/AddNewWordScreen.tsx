@@ -1,20 +1,38 @@
 import {Box, FormControl, HStack, Select, VStack} from 'native-base';
-import React from 'react';
-import {FC} from 'react';
+import React, {FC} from 'react';
 import {Screen} from '@components/Screen';
 import {CustomInput} from '@components/Input';
 import {CustomButton} from '@components/Button';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Colors} from '@theme/colors';
 import {WordDto} from '@core/modules/word/dtos/word.dto';
+import {addNewWordValidationSchema} from '@screens/AddNewWord/validation-schema';
+import {Controller, useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
 
 const SPACING = widthPercentageToDP(4);
 
 export interface IAddNewWordScreen {
   addNewWord: (dto: WordDto) => void;
+  getAllWords: () => any;
 }
 
-export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
+export const AddNewWordScreen: FC<IAddNewWordScreen> = ({
+  addNewWord,
+  getAllWords,
+}) => {
+  const {
+    handleSubmit,
+    control,
+    formState: {errors},
+  } = useForm<WordDto>({
+    resolver: yupResolver(addNewWordValidationSchema),
+  });
+
+  const submitHandler = (values: WordDto) => {
+    addNewWord(values);
+  };
+
   const renderImageField = () => {
     return (
       <Box
@@ -30,18 +48,54 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
 
   const renderFields = () => (
     <VStack space={SPACING}>
-      <FormControl isRequired>
+      <FormControl isRequired isInvalid={!!errors.word}>
         <FormControl.Label>Word</FormControl.Label>
-        <CustomInput placeholder="Type your word" />
-        <FormControl.HelperText>Original word</FormControl.HelperText>
+        <Controller
+          control={control}
+          name={'word'}
+          render={({field}) => {
+            return (
+              <CustomInput
+                value={field.value}
+                onChangeText={field.onChange}
+                placeholder={'Type your word'}
+              />
+            );
+          }}
+        />
+        {errors.word ? (
+          <FormControl.ErrorMessage>
+            {errors.word.message}
+          </FormControl.ErrorMessage>
+        ) : (
+          <FormControl.HelperText>Original word</FormControl.HelperText>
+        )}
       </FormControl>
       <HStack w={'full'} space={SPACING}>
-        <FormControl flex={1} isRequired>
+        <FormControl flex={1} isRequired isInvalid={!!errors.meaning}>
           <FormControl.Label>Meaning</FormControl.Label>
-          <CustomInput placeholder="Type meaning" />
-          <FormControl.HelperText>
-            Meaning of original word
-          </FormControl.HelperText>
+          <Controller
+            control={control}
+            name={'meaning'}
+            render={({field}) => {
+              return (
+                <CustomInput
+                  value={field.value}
+                  onChangeText={field.onChange}
+                  placeholder="Type meaning"
+                />
+              );
+            }}
+          />
+          {errors.meaning ? (
+            <FormControl.ErrorMessage>
+              {errors.meaning.message}
+            </FormControl.ErrorMessage>
+          ) : (
+            <FormControl.HelperText>
+              Meaning of original word
+            </FormControl.HelperText>
+          )}
         </FormControl>
         <FormControl flex={1}>
           <FormControl.Label>Tags</FormControl.Label>
@@ -55,15 +109,19 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
 
   const renderButton = () => {
     return (
-      <CustomButton
-        onPress={() =>
-          addNewWord({
-            meaning: 'a',
-            word: 'a',
-          })
-        }>
-        Add this word
-      </CustomButton>
+      <>
+        <CustomButton onPress={handleSubmit(submitHandler)}>
+          Add this word
+        </CustomButton>
+        <CustomButton
+          onPress={() => {
+            getAllWords().then((values: any) =>
+              console.log(values[3].toJSON()),
+            );
+          }}>
+          get all words
+        </CustomButton>
+      </>
     );
   };
 
