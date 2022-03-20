@@ -4,7 +4,7 @@ import {AuthScreen} from '@screens/Auth';
 import {DashboardScreen} from '@screens/Dashboard/DashboardScreen';
 import {MainStackParamList} from './navigation';
 import {Platform} from 'react-native';
-import {AddNewWordScreen} from '@screens/AddNewWord/AddNewWordScreen';
+import {AddNewWordController} from '@screens/AddNewWord/AddNewWordController';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -18,7 +18,7 @@ export const MainStack = () => {
       initialRouteName="Auth">
       <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="Dashboard" component={DashboardScreen} />
-      <Stack.Screen name="AddNewWord" component={AddNewWordScreen} />
+      <Stack.Screen name="AddNewWord" component={AddNewWordController} />
     </Stack.Navigator>
   );
 };
