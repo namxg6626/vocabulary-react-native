@@ -1,5 +1,5 @@
 import {RxJsonSchema} from 'rxdb';
-import {IWord} from './word.interface';
+import {IWord} from './inferfaces/word.interface';
 
 export const wordSchema: RxJsonSchema<IWord> = {
   version: 0,
@@ -22,8 +22,11 @@ export const wordSchema: RxJsonSchema<IWord> = {
     word: {
       type: 'string',
     },
+    createdAt: {
+      type: 'string',
+    },
     updatedAt: {
-      type: 'number',
+      type: 'string',
     },
   },
   required: ['rxid', 'word', 'meaning'],

@@ -1,8 +1,9 @@
 export interface IWord {
   id?: string;
-  rxid: string;
+  rxid?: string;
   word: string;
   meaning: string;
-  image: any;
-  updatedAt: number;
+  image?: any;
+  updatedAt?: string;
+  createdAt?: string;
 }
