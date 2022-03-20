@@ -4,13 +4,13 @@ import {IWord} from './inferfaces/word.interface';
 export const wordSchema: RxJsonSchema<IWord> = {
   version: 0,
   title: 'wordSchema',
-  primaryKey: 'rxid',
+  primaryKey: 'rxId',
   type: 'object',
   properties: {
     id: {
       type: 'string',
     },
-    rxid: {
+    rxId: {
       type: 'string',
     },
     image: {
@@ -29,5 +29,5 @@ export const wordSchema: RxJsonSchema<IWord> = {
       type: 'string',
     },
   },
-  required: ['rxid', 'word', 'meaning'],
+  required: ['rxId', 'word', 'meaning'],
 };

@@ -41,25 +41,25 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
   };
 
   findById = async (rxid: string) => {
-    return this.Word.findOne().where('rxid').eq(rxid).exec();
+    return this.Word.findOne().where('rxId').eq(rxid).exec();
   };
 
   updateById = async (rxid: string, dto: WordDto) => {
-    const query = this.Word.findOne().where('rxid').eq(rxid);
+    const query = this.Word.findOne().where('rxId').eq(rxid);
     return query.update({...dto, updatedAt: WordRepository.now.toISOString()});
   };
 
   insert = async (dto: WordDto) => {
     return this.Word.insert({
       ...dto,
-      rxid: uuid(),
+      rxId: uuid(),
       createdAt: WordRepository.now.toISOString(),
       updatedAt: WordRepository.now.toISOString(),
     });
   };
 
   deleteById = (rxid: string) => {
-    const query = this.Word.findOne().where('rxid').eq(rxid);
+    const query = this.Word.findOne().where('rxId').eq(rxid);
     return query.remove();
   };
 

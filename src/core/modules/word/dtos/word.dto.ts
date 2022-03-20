@@ -2,7 +2,7 @@ import {IWord} from '../inferfaces/word.interface';
 
 export class WordDto implements IWord {
   id?: string;
-  rxid?: string;
+  rxId?: string;
   image?: any;
   meaning!: string;
   word!: string;
