@@ -14,13 +14,9 @@ const SPACING = widthPercentageToDP(4);
 
 export interface IAddNewWordScreen {
   addNewWord: (dto: WordDto) => void;
-  getAllWords: () => any;
 }
 
-export const AddNewWordScreen: FC<IAddNewWordScreen> = ({
-  addNewWord,
-  getAllWords,
-}) => {
+export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
   const {
     handleSubmit,
     control,
@@ -112,14 +108,6 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({
       <>
         <CustomButton onPress={handleSubmit(submitHandler)}>
           Add this word
-        </CustomButton>
-        <CustomButton
-          onPress={() => {
-            getAllWords().then((values: any) =>
-              console.log(values[3].toJSON()),
-            );
-          }}>
-          get all words
         </CustomButton>
       </>
     );
