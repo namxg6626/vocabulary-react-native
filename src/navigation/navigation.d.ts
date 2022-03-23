@@ -5,6 +5,7 @@ type MainStackParamList = {
   Dashboard: {
     isGuest?: boolean;
   };
+  YourWords: undefined;
   AddNewWord: undefined;
 };
 
