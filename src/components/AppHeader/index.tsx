@@ -28,7 +28,7 @@ export const AppHeader: FC<IAppHeaderProps> = ({
             onPress={onBackPress}>
             <MaterialIcons name="arrow-back-ios" color={'white'} size={24} />
           </Pressable>
-          <Text fontSize={'4xl'} fontWeight={'bold'}>
+          <Text fontSize={'3xl'} fontWeight={'bold'}>
             {headerContent}
           </Text>
         </HStack>
