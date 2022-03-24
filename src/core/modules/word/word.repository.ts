@@ -1,4 +1,4 @@
-import {createRxDatabaseAsync} from '@core/database/rxdb';
+import {initRxDatabaseAsync} from '@core/database/rxdb';
 import {BaseRepository} from '@core/base/base-repository.interface';
 import {RxCollection} from 'rxdb';
 import {IWord} from './inferfaces/word.interface';
@@ -35,8 +35,8 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
 
   initializeCollection = async () => {
     if (_.isEmpty(this._Word)) {
-      const rxdb = await createRxDatabaseAsync();
-      this.Word = rxdb.word;
+      const rxDB = await initRxDatabaseAsync();
+      this.Word = rxDB.word;
     }
   };
 
