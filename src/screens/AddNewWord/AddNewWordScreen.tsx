@@ -115,7 +115,7 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
 
   return (
     <Screen headerContent="Add word" enableStatusBar>
-      <VStack space={SPACING * 3} mt={SPACING}>
+      <VStack space={SPACING * 3}>
         {renderImageField()}
         {renderFields()}
         {renderButton()}

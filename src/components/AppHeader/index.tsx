@@ -1,8 +1,8 @@
-import React from 'react';
-import {FC} from 'react';
-import {Box, HStack, Text, Pressable} from 'native-base';
+import React, {FC} from 'react';
+import {Box, HStack, Pressable, Text} from 'native-base';
 import {Colors} from '@theme/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 
 export interface IAppHeaderProps {
   headerContent: React.ReactNode;
@@ -38,5 +38,9 @@ export const AppHeader: FC<IAppHeaderProps> = ({
     return headerContent;
   };
 
-  return <Box backgroundColor={Colors.gumental}>{renderHeaderContent()}</Box>;
+  return (
+    <Box backgroundColor={Colors.gumental} pb={widthPercentageToDP(3)}>
+      {renderHeaderContent()}
+    </Box>
+  );
 };
