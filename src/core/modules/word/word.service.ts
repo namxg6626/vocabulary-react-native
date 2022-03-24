@@ -1,17 +1,16 @@
-import {BaseService} from '@core/base/base-service.interface';
 import {WordDto} from './dtos/word.dto';
-import {IWord} from './inferfaces/word.interface';
 import {WordRepository} from './word.repository';
+import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
 
-export class WordService implements BaseService<IWord, WordDto> {
+export class WordService implements IWordService {
   private wordRepository: WordRepository;
 
   constructor(wordRepository?: WordRepository) {
     this.wordRepository = wordRepository || new WordRepository();
   }
 
-  initializeRepositoryCollection = async () => {
-    return await this.wordRepository.initializeCollection();
+  initializeRepositoryCollection = () => {
+    return this.wordRepository.initializeCollection();
   };
 
   insert = (dto: WordDto) => {
