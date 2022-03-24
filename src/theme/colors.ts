@@ -6,4 +6,5 @@ export enum Colors {
   lightningYellow = '#ffc422',
   pastelOrange = '#ff974a',
   charcoalGray = '#404040',
+  limedSpruce = '#31444E',
 }

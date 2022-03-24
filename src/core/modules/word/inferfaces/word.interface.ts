@@ -1,6 +1,6 @@
 export interface IWord {
   id?: string;
-  rxId?: string;
+  rxId: string;
   word: string;
   meaning: string;
   image?: any;
