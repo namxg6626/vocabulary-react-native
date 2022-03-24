@@ -40,16 +40,16 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
     }
   };
 
-  findById = async (rxid: string) => {
-    return this.Word.findOne().where('rxId').eq(rxid).exec();
+  findById = (rxId: string) => {
+    return this.Word.findOne().where('rxId').eq(rxId).exec();
   };
 
-  updateById = async (rxid: string, dto: WordDto) => {
-    const query = this.Word.findOne().where('rxId').eq(rxid);
+  updateById = (rxId: string, dto: WordDto) => {
+    const query = this.Word.findOne().where('rxId').eq(rxId);
     return query.update({...dto, updatedAt: WordRepository.now.toISOString()});
   };
 
-  insert = async (dto: WordDto) => {
+  insert = (dto: WordDto) => {
     return this.Word.insert({
       ...dto,
       rxId: uuid(),
@@ -58,8 +58,8 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
     });
   };
 
-  deleteById = (rxid: string) => {
-    const query = this.Word.findOne().where('rxId').eq(rxid);
+  deleteById = (rxId: string) => {
+    const query = this.Word.findOne().where('rxId').eq(rxId);
     return query.remove();
   };
 
