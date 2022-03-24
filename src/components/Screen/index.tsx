@@ -1,10 +1,9 @@
-import React from 'react';
-import {FC} from 'react';
+import React, {FC} from 'react';
 import {Box} from 'native-base';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from '@theme/colors';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
-import {Platform, StatusBar} from 'react-native';
+import {Platform, StatusBar, StyleSheet} from 'react-native';
 import {AppHeader} from '@components/AppHeader';
 import {useNavigation} from '@react-navigation/native';
 
@@ -51,7 +50,7 @@ export const Screen: FC<IScreenProps> = ({
       {disableSafeArea ? (
         children
       ) : (
-        <SafeAreaView>
+        <SafeAreaView style={styles.screenSafeAreaView}>
           {renderAppHeader()}
           {children}
         </SafeAreaView>
@@ -59,3 +58,9 @@ export const Screen: FC<IScreenProps> = ({
     </Box>
   );
 };
+
+const styles = StyleSheet.create({
+  screenSafeAreaView: {
+    flex: 1,
+  },
+});
