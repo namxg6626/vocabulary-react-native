@@ -3,6 +3,7 @@ import {InStackScreenProps} from '@navigation/navigation';
 import {AddNewWordScreen} from './AddNewWordScreen';
 import {WordService} from '@core/modules/word/word.service';
 import {WordDto} from '@core/modules/word/dtos/word.dto';
+import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
 
 export type AddNewWordControllerProps = InStackScreenProps<'AddNewWord'> & {
   wordService?: WordService;
@@ -14,31 +15,22 @@ export class AddNewWordController extends React.Component<
   AddNewWordControllerProps,
   AddNewWordControllerState
 > {
-  wordService: WordService;
+  wordService: IWordService;
 
   constructor(props: AddNewWordControllerProps) {
     super(props);
     this.wordService = props.wordService || new WordService();
   }
 
-  componentDidMount() {
-    this.wordService.initializeRepositoryCollection();
+  async componentDidMount() {
+    await this.wordService.initializeRepositoryCollection();
   }
 
   addNewWord = async (dto: WordDto) => {
     return await this.wordService.insert(dto);
   };
 
-  getAllWords = async () => {
-    return await this.wordService.getAllDocuments();
-  };
-
   render() {
-    return (
-      <AddNewWordScreen
-        addNewWord={this.addNewWord}
-        getAllWords={this.getAllWords}
-      />
-    );
+    return <AddNewWordScreen addNewWord={this.addNewWord} />;
   }
 }
