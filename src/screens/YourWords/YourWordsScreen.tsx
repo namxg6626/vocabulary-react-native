@@ -1,17 +1,11 @@
 import React, {useState} from 'react';
-import {Screen} from '@components/Screen';
 import {IWord} from '@core/modules/word/inferfaces/word.interface';
+import {CustomTabView, Screen} from '@components/index';
 import {Box, Text} from 'native-base';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
-import {
-  NavigationState,
-  SceneMap,
-  SceneRendererProps,
-  TabView,
-} from 'react-native-tab-view';
-import {Animated, FlatList, Pressable} from 'react-native';
+import {SceneMap} from 'react-native-tab-view';
+import {FlatList} from 'react-native';
 import {Colors} from '@theme/colors';
-import _ from 'lodash';
 
 export type YourWordsScreenProps = {
   words: IWord[];
@@ -75,38 +69,6 @@ export const YourWordsScreen: React.FC<YourWordsScreenProps> = ({words}) => {
     );
   };
 
-  const renderTabBar = (
-    props: SceneRendererProps & {
-      navigationState: NavigationState<{key: string; title: string}>;
-    },
-  ) => (
-    <Box flexDirection="row">
-      {props.navigationState.routes.map((route, i) => {
-        const color = index === i ? Colors.parisGreen : Colors.textSecondary;
-        const borderColor =
-          index === i ? Colors.parisGreen : Colors.textSecondary;
-        return (
-          <Box
-            borderBottomWidth="3"
-            borderColor={borderColor}
-            flex={1}
-            alignItems="center"
-            p="3"
-            cursor="pointer">
-            <Pressable onPress={() => setIndex(i)}>
-              <Animated.Text
-                style={{
-                  color,
-                }}>
-                {route.title}
-              </Animated.Text>
-            </Pressable>
-          </Box>
-        );
-      })}
-    </Box>
-  );
-
   const renderScene = SceneMap({
     allWords: AllWords,
     anotherAllWords: AnotherAllWords,
@@ -114,11 +76,10 @@ export const YourWordsScreen: React.FC<YourWordsScreenProps> = ({words}) => {
 
   return (
     <Screen headerContent={'Your Words'} enableStatusBar>
-      <TabView
+      <CustomTabView
         navigationState={{index, routes}}
         renderScene={renderScene}
-        renderTabBar={renderTabBar}
-        onIndexChange={_.noop}
+        onIndexChange={setIndex}
       />
     </Screen>
   );
