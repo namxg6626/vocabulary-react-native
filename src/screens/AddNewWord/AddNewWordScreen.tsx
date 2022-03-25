@@ -9,6 +9,7 @@ import {WordDto} from '@core/modules/word/dtos/word.dto';
 import {addNewWordValidationSchema} from '@screens/AddNewWord/validation-schema';
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
+import {KeyboardAvoidingView} from '@components/KeyboardAvoidingView';
 
 const SPACING = widthPercentageToDP(4);
 
@@ -115,11 +116,14 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
 
   return (
     <Screen headerContent="Add word" enableStatusBar>
-      <VStack space={SPACING * 3}>
-        {renderImageField()}
-        {renderFields()}
-        {renderButton()}
-      </VStack>
+      <KeyboardAvoidingView>
+        <VStack space={SPACING * 3}>
+          {renderImageField()}
+          {renderFields()}
+          {renderButton()}
+        </VStack>
+        <Box flexGrow={1} />
+      </KeyboardAvoidingView>
     </Screen>
   );
 };

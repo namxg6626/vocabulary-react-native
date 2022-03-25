@@ -9,6 +9,7 @@ export interface IAppHeaderProps {
   onBackPress?: () => void;
 }
 
+// TODO blur AppHeader when the keyboard appeared (this behavior is only the KeyboardAvoidingView is rendered)
 export const AppHeader: FC<IAppHeaderProps> = ({
   headerContent,
   onBackPress,
