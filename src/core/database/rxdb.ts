@@ -19,6 +19,7 @@ async function createRxDatabaseAsync() {
     name: 'mydatabase',
     storage: getRxStoragePouch('react-native-sqlite'), // the name of your adapter,
     ignoreDuplicate: false,
+    multiInstance: false,
   });
 }
 
@@ -35,5 +36,6 @@ export async function initRxDatabaseAsync() {
       },
     });
   }
+
   return rxDB;
 }
