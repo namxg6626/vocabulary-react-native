@@ -1,9 +1,7 @@
-export interface IWord {
-  id?: string;
-  rxId: string;
+import {BaseModel} from '@core/base/base-model.interface';
+
+export interface IWord extends BaseModel {
   word: string;
   meaning: string;
   image?: any;
-  updatedAt?: string;
-  createdAt?: string;
 }
