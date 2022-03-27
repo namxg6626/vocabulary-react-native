@@ -10,14 +10,16 @@ import {addNewWordValidationSchema} from '@screens/AddNewWord/validation-schema'
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {KeyboardAvoidingView} from '@components/KeyboardAvoidingView';
+import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 
 const SPACING = widthPercentageToDP(4);
 
 export interface IAddNewWordScreen {
+  tags: ITag[];
   addNewWord: (dto: WordDto) => void;
 }
 
-export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
+export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord, tags}) => {
   const {
     handleSubmit,
     control,
@@ -96,8 +98,10 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord}) => {
         </FormControl>
         <FormControl flex={1}>
           <FormControl.Label>Tags</FormControl.Label>
-          <Select selectedValue="tag 1 value">
-            <Select.Item label="Tag 1" value="tag 1 value" />
+          <Select>
+            {tags.map(tag => (
+              <Select.Item key={tag.rxId} label={tag.name} value={tag.rxId} />
+            ))}
           </Select>
         </FormControl>
       </HStack>
