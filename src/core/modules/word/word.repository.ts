@@ -44,7 +44,7 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
     return this.Word.findOne().where('rxId').eq(rxId).exec();
   };
 
-  updateById = (rxId: string, dto: WordDto) => {
+  updateById = (rxId: string, dto: Partial<WordDto>) => {
     const query = this.Word.findOne().where('rxId').eq(rxId);
     return query.update({...dto, updatedAt: WordRepository.now.toISOString()});
   };

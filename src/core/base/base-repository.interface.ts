@@ -8,7 +8,10 @@ export interface BaseRepository<DocumentType = any, CommonDto = any> {
   getCollection: () => RxCollection<DocumentType> | null;
   initializeCollection: () => Promise<void>;
   insert: (dto: CommonDto) => RxDocumentPromise<DocumentType>;
-  findById: (rxid: string) => RxDocumentPromise<DocumentType>;
-  updateById: (rxid: string, dto: CommonDto) => RxDocumentPromise<DocumentType>;
-  deleteById: (rxid: string) => RxDocumentPromise<DocumentType>;
+  findById: (rxId: string) => RxDocumentPromise<DocumentType>;
+  updateById: (
+    rxId: string,
+    dto: Partial<CommonDto>,
+  ) => RxDocumentPromise<DocumentType>;
+  deleteById: (rxId: string) => RxDocumentPromise<DocumentType>;
 }

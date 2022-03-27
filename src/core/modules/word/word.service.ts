@@ -21,7 +21,7 @@ export class WordService implements IWordService {
     return this.wordRepository.findById(rxId);
   };
 
-  updateById = (rxId: string, dto: WordDto) => {
+  updateById = (rxId: string, dto: Partial<WordDto>) => {
     return this.wordRepository.updateById(rxId, dto);
   };
 
