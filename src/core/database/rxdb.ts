@@ -5,6 +5,7 @@ import SQLiteAdapterFactory from 'pouchdb-adapter-react-native-sqlite';
 import * as PouchDBAdapterHttp from 'pouchdb-adapter-http';
 import {AppCollections} from './rxdb.types';
 import {wordSchema} from '@core/modules/word/word.schema';
+import {tagSchema} from '@core/modules/tag/schemas/tag.schema';
 
 const SQLiteAdapter = SQLiteAdapterFactory(SQLite);
 
@@ -33,6 +34,9 @@ export async function initRxDatabaseAsync() {
     await rxDB.addCollections({
       word: {
         schema: wordSchema,
+      },
+      tag: {
+        schema: tagSchema,
       },
     });
   }
