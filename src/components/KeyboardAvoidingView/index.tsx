@@ -3,11 +3,18 @@ import {TouchableWithoutFeedback, Keyboard, StyleSheet} from 'react-native';
 import {Box, KeyboardAvoidingView as NBKeyboardAvoidingView} from 'native-base';
 import {Platform} from 'react-native';
 
-export const KeyboardAvoidingView: React.FC = ({children}) => {
+type KeyboardAvoidingViewProps = any;
+
+export const KeyboardAvoidingView: React.FC<KeyboardAvoidingViewProps> = ({
+  children,
+  ...props
+}) => {
   return (
     <NBKeyboardAvoidingView
       behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-      flex={1}>
+      flex={1}
+      {...props}
+      justifyContent={'center'}>
       <TouchableWithoutFeedback
         style={styles.touchableWithoutFeedback}
         onPress={Keyboard.dismiss}>
