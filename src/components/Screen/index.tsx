@@ -53,6 +53,7 @@ export const Screen: FC<IScreenProps> = ({
         <SafeAreaView style={styles.screenSafeAreaView}>
           {renderAppHeader()}
           {children}
+          {Platform.OS === 'android' && <Box pb={widthPercentageToDP(6)} />}
         </SafeAreaView>
       )}
     </Box>
