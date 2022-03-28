@@ -126,12 +126,13 @@ export const DashboardScreen: FC<InStackScreenProps<'Dashboard'>> = ({
               }
             />
             <LargeColorizedButton
+              onPress={() => navigation.push('YourTags')}
               $bgColor={Colors.pastelOrange}
-              $textContent1="Synchronize"
-              $textContent2="to cloud"
+              $textContent1="Manage your"
+              $textContent2="tags"
               $icon={
-                <FontisoIcons
-                  name="cloud-up"
+                <AntdIcons
+                  name="tags"
                   size={widthPercentageToDP(20)}
                   color="white"
                 />
