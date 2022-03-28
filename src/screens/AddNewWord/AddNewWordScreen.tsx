@@ -97,7 +97,7 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord, tags}) => {
           )}
         </FormControl>
         <FormControl flex={1}>
-          <FormControl.Label>Tags</FormControl.Label>
+          <FormControl.Label>Tag</FormControl.Label>
           <Select>
             {tags.map(tag => (
               <Select.Item key={tag.rxId} label={tag.name} value={tag.rxId} />

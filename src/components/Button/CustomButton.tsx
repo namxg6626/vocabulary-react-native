@@ -35,7 +35,7 @@ export const CustomButton: FC<ICustomButtonProps> = ({
     .darken(10)
     .toRgbString();
 
-  const _renderChilren = () => {
+  const _renderChildren = () => {
     if (typeof children === 'string') {
       return (
         <Text
@@ -59,7 +59,7 @@ export const CustomButton: FC<ICustomButtonProps> = ({
       backgroundColor={DEFAULT_BACKGROUND_COLOR}
       borderRadius={12}
       {...props}>
-      {_renderChilren()}
+      {_renderChildren()}
     </Pressable>
   );
 };
