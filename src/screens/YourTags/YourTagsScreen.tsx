@@ -1,16 +1,11 @@
 import React from 'react';
 import {FlatList, Platform} from 'react-native';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
-import {
-  Screen,
-  CustomButton,
-  CustomInput,
-  KeyboardAvoidingView,
-  Empty,
-} from '@components/index';
-import {TagModal} from './components/TagModal';
+import {Screen, CustomButton, Empty} from '@components/index';
+import {TagModal, TagFormValue} from './components/TagModal';
 import {useSet} from '@hooks/index';
 import _ from 'lodash';
+import {TagItem} from '@screens/YourTags/components/TagItem';
 
 enum ModalName {
   ADD_NEW_TAG,
@@ -19,17 +14,22 @@ enum ModalName {
 
 export type YourTagsScreenProps = {
   tags: ITag[];
-  addTag: (tagName: string) => void;
+  addTag: (tagName: string) => Promise<ITag | undefined>;
 };
 
-export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({tags}) => {
+export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({
+  tags,
+  addTag,
+}) => {
   const [modalNames, modalNameActions] = useSet<ModalName>();
 
-  const submitHandler = (values: any) => {
-    console.log(values);
+  const submitHandler = (value: TagFormValue) => {
+    addTag(value.name).finally(() => {
+      modalNameActions.clear();
+    });
   };
 
-  const Body = () => {
+  const TagsList = () => {
     return (
       <>
         {_.isEmpty(tags) ? (
@@ -41,7 +41,7 @@ export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({tags}) => {
           <FlatList
             removeClippedSubviews={Platform.OS === 'ios'}
             data={tags}
-            renderItem={({item}) => <CustomInput />}
+            renderItem={({item}) => <TagItem tag={item} />}
             keyExtractor={item => item.rxId}
           />
         )}
@@ -57,13 +57,7 @@ export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({tags}) => {
         onConfirm={submitHandler}
         onClose={modalNameActions.clear}
       />
-      {modalNames.length ? (
-        <Body />
-      ) : (
-        <KeyboardAvoidingView>
-          <Body />
-        </KeyboardAvoidingView>
-      )}
+      <TagsList />
       <CustomButton onPress={() => modalNameActions.add(ModalName.ADD_NEW_TAG)}>
         Add new tag
       </CustomButton>

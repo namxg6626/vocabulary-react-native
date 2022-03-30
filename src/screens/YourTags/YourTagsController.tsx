@@ -5,9 +5,12 @@ import {YourTagsScreen} from '@screens/YourTags/YourTagsScreen';
 import {TagService} from '@core/modules/tag/tag.service';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import {TagDto} from '@core/modules/tag/dtos/tag.dto';
+import {IMessageService} from '@core/modules/message/message-service.interface';
+import {MessageService} from '@core/modules/message/message.service';
 
 export type YourTagsControllerProps = InStackScreenProps<'YourTags'> & {
   tagService?: ITagService;
+  messageService?: IMessageService;
 };
 
 type YourTagsControllerState = {
@@ -19,6 +22,7 @@ export class YourTagsController extends Component<
   YourTagsControllerState
 > {
   tagService: ITagService;
+  messageService: IMessageService;
   state = {
     tags: [],
   };
@@ -26,6 +30,7 @@ export class YourTagsController extends Component<
   constructor(props: YourTagsControllerProps) {
     super(props);
     this.tagService = props.tagService || new TagService();
+    this.messageService = props.messageService || new MessageService();
   }
 
   async componentDidMount() {
@@ -52,9 +57,26 @@ export class YourTagsController extends Component<
     }
   };
 
-  addTag = (tagName: string) => {
+  addTag = async (tagName: string) => {
     const dto = new TagDto(tagName, []);
-    return this.tagService.insert(dto);
+    const newTag = await this.tagService.insert(dto);
+    const tagJson = newTag?.toJSON();
+    if (tagJson) {
+      this.messageService.pushMessage({
+        status: 'success',
+        title: 'New tag has been added',
+      });
+      await this.getAllTags();
+      return {
+        ...tagJson,
+        wordIds: Array.from(tagJson?.wordIds || []),
+      };
+    }
+    this.messageService.pushMessage({
+      status: 'error',
+      title: 'An error occurred while adding new tag',
+    });
+    return undefined;
   };
 
   render() {
