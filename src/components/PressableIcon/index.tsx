@@ -1,13 +1,16 @@
-import {Box, Pressable} from 'native-base';
+import {Box, Pressable, IPressableProps} from 'native-base';
 import React, {useState} from 'react';
 import tinycolor from 'tinycolor2';
 import {Colors} from '@theme/colors';
 import {LayoutChangeEvent} from 'react-native';
-type PressableIconProps = {
+type PressableIconProps = IPressableProps & {
   icon: React.ReactNode;
 };
 
-export const PressableIcon: React.FC<PressableIconProps> = ({icon}) => {
+export const PressableIcon: React.FC<PressableIconProps> = ({
+  icon,
+  ...props
+}) => {
   const [height, setHeight] = useState(0);
 
   const handleLayout = (e: LayoutChangeEvent) => {
@@ -29,7 +32,8 @@ export const PressableIcon: React.FC<PressableIconProps> = ({icon}) => {
         backgroundColor: tinycolor(Colors.textSecondary)
           .setAlpha(0.1)
           .toRgbString(),
-      }}>
+      }}
+      {...props}>
       <Box m={2}>{icon}</Box>
     </Pressable>
   );

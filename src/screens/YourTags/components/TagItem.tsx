@@ -3,17 +3,19 @@ import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import {Colors} from '@theme/colors';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Box, HStack, Text} from 'native-base';
-import {PressableIcon} from '@components/index';
-import FeatherIcons from 'react-native-vector-icons/Feather';
-import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
+import {ItemActions} from '@components/index';
 
 type TagItemProps = {
   tag: ITag;
+  onPenPress: () => void;
+  onBackspacePress: () => void;
 };
 
-const ICON_SIZE = widthPercentageToDP(5);
-
-export const TagItem: React.FC<TagItemProps> = ({tag}) => {
+export const TagItem: React.FC<TagItemProps> = ({
+  tag,
+  onPenPress,
+  onBackspacePress,
+}) => {
   return (
     <HStack
       alignItems={'center'}
@@ -28,26 +30,10 @@ export const TagItem: React.FC<TagItemProps> = ({tag}) => {
         </Text>
         <Text fontSize={'xs'}>Words: {tag.wordIds.length}</Text>
       </Box>
-      <HStack>
-        <PressableIcon
-          icon={
-            <FontAwesomeIcons
-              color={Colors.parisGreen}
-              name={'pencil'}
-              size={ICON_SIZE}
-            />
-          }
-        />
-        <PressableIcon
-          icon={
-            <FeatherIcons
-              color={Colors.beanRed}
-              name={'delete'}
-              size={ICON_SIZE}
-            />
-          }
-        />
-      </HStack>
+      <ItemActions
+        onBackspacePress={onBackspacePress}
+        onPenPress={onPenPress}
+      />
     </HStack>
   );
 };
