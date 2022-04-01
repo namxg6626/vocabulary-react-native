@@ -79,7 +79,22 @@ export class YourTagsController extends Component<
     return undefined;
   };
 
+  deleteTag = async (tagId: string) => {
+    await this.tagService.deleteById(tagId);
+    await this.getAllTags();
+    this.messageService.pushMessage({
+      title: 'Tag is deleted',
+      status: 'info',
+    });
+  };
+
   render() {
-    return <YourTagsScreen tags={this.state.tags} addTag={this.addTag} />;
+    return (
+      <YourTagsScreen
+        tags={this.state.tags}
+        addTag={this.addTag}
+        deleteTag={this.deleteTag}
+      />
+    );
   }
 }
