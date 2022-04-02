@@ -1,16 +1,19 @@
 import React from 'react';
 import {InStackScreenProps} from '@navigation/navigation';
-import {AddNewWordScreen} from './AddNewWordScreen';
+import {AddNewWordScreen, AddNewWordForm} from './AddNewWordScreen';
 import {WordService} from '@core/modules/word/word.service';
-import {WordDto} from '@core/modules/word/dtos/word.dto';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
 import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
 import {TagService} from '@core/modules/tag/tag.service';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
+import {IMessageService} from '@core/modules/message/message-service.interface';
+import {MessageService} from '@core/modules/message/message.service';
+import _ from 'lodash';
 
 export type AddNewWordControllerProps = InStackScreenProps<'AddNewWord'> & {
   wordService?: IWordService;
   tagService?: ITagService;
+  messageService?: IMessageService;
 };
 
 type AddNewWordControllerState = {
@@ -23,6 +26,7 @@ export class AddNewWordController extends React.Component<
 > {
   wordService: IWordService;
   tagService: ITagService;
+  messageService: IMessageService;
   state = {
     tags: [],
   };
@@ -31,6 +35,7 @@ export class AddNewWordController extends React.Component<
     super(props);
     this.wordService = props.wordService || new WordService();
     this.tagService = props.tagService || new TagService();
+    this.messageService = props.messageService || new MessageService();
   }
 
   async componentDidMount() {
@@ -43,8 +48,21 @@ export class AddNewWordController extends React.Component<
     }
   }
 
-  addNewWord = (dto: WordDto) => {
-    return this.wordService.insert(dto);
+  addNewWord = async (formValue: AddNewWordForm) => {
+    const wordDto = _.omit(formValue, 'tagRxId');
+    const tagRxId = formValue.tagRxId;
+    let result;
+    if (tagRxId) {
+      result = await this.tagService.addNewWordToTag(tagRxId, wordDto);
+    } else {
+      result = await this.wordService.insert(wordDto);
+    }
+
+    this.messageService.pushMessage({
+      title: 'New word is added',
+      status: 'success',
+    });
+    return !!result;
   };
 
   getAllTags = async () => {

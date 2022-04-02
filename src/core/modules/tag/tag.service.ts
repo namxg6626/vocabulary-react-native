@@ -2,16 +2,22 @@ import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
 import {TagRepository} from '@core/modules/tag/tag.repository';
 import {ITagRepository} from '@core/modules/tag/interfaces/tag-repository.interface';
 import {TagDto} from '@core/modules/tag/dtos/tag.dto';
+import {WordDto} from '@core/modules/word/dtos/word.dto';
+import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
+import {WordService} from '@core/modules/word/word.service';
 
 export class TagService implements ITagService {
   private tagRepository: ITagRepository;
+  private wordService: IWordService;
 
-  constructor(tagRepository?: ITagRepository) {
+  constructor(tagRepository?: ITagRepository, wordService?: IWordService) {
     this.tagRepository = tagRepository || new TagRepository();
+    this.wordService = wordService || new WordService();
   }
 
-  initializeRepositoryCollection(): Promise<void> {
-    return this.tagRepository.initializeCollection();
+  async initializeRepositoryCollection() {
+    await this.wordService.initializeRepositoryCollection();
+    await this.tagRepository.initializeCollection();
   }
 
   insert(dto: TagDto) {
@@ -32,5 +38,18 @@ export class TagService implements ITagService {
 
   getAllDocuments = () => {
     return this.tagRepository.getAllDocuments();
+  };
+
+  addNewWordToTag = async (tagRxId: string, wordDto: WordDto) => {
+    const tag = await this.tagRepository.findById(tagRxId);
+    const newWord = await this.wordService.insert(wordDto);
+    if (tag && newWord) {
+      return await tag.update({
+        $push: {
+          wordIds: newWord.rxId,
+        },
+      });
+    }
+    return tag;
   };
 }

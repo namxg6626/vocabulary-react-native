@@ -14,9 +14,13 @@ import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 
 const SPACING = widthPercentageToDP(4);
 
+export type AddNewWordForm = WordDto & {
+  tagRxId: string;
+};
+
 export interface IAddNewWordScreen {
   tags: ITag[];
-  addNewWord: (dto: WordDto) => void;
+  addNewWord: (dto: AddNewWordForm) => Promise<boolean>;
 }
 
 export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord, tags}) => {
@@ -24,12 +28,21 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord, tags}) => {
     handleSubmit,
     control,
     formState: {errors},
-  } = useForm<WordDto>({
+    reset,
+  } = useForm<AddNewWordForm>({
     resolver: yupResolver(addNewWordValidationSchema),
   });
 
-  const submitHandler = (values: WordDto) => {
-    addNewWord(values);
+  const submitHandler = (values: AddNewWordForm) => {
+    addNewWord(values).then(done => {
+      if (done) {
+        reset({
+          word: '',
+          meaning: '',
+          tagRxId: '',
+        });
+      }
+    });
   };
 
   const renderImageField = () => {
@@ -98,11 +111,21 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord, tags}) => {
         </FormControl>
         <FormControl flex={1}>
           <FormControl.Label>Tag</FormControl.Label>
-          <Select>
-            {tags.map(tag => (
-              <Select.Item key={tag.rxId} label={tag.name} value={tag.rxId} />
-            ))}
-          </Select>
+          <Controller
+            control={control}
+            name={'tagRxId'}
+            render={({field: {onChange, value}}) => (
+              <Select onValueChange={onChange} selectedValue={value}>
+                {tags.map(tag => (
+                  <Select.Item
+                    key={tag.rxId}
+                    label={tag.name}
+                    value={tag.rxId}
+                  />
+                ))}
+              </Select>
+            )}
+          />
         </FormControl>
       </HStack>
     </VStack>
