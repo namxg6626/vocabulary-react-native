@@ -1,25 +1,39 @@
 import React from 'react';
+import {FlatList} from 'react-native';
 import {
   TabViewProps,
   TabView,
   SceneRendererProps,
   NavigationState,
+  Route,
 } from 'react-native-tab-view';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
-import {Box} from 'native-base';
 import {Colors} from '@theme/colors';
 import {Animated, TouchableOpacity} from 'react-native';
+import _ from 'lodash';
 
 const getTabBarButtonStyle = (borderColor: string) => ({
-  flex: 1,
   borderBottomWidth: 3,
   borderColor,
   padding: widthPercentageToDP(3),
 });
 
-export type CustomTabviewProps = TabViewProps<any> & {};
+export type CustomTabviewProps<T extends Route> = TabViewProps<T> & {
+  onRouteChange?: (route: T) => void;
+};
 
-export const CustomTabView: React.FC<CustomTabviewProps> = ({...props}) => {
+export const CustomTabView: React.FC<CustomTabviewProps<any>> = ({
+  onRouteChange = _.noop,
+  onIndexChange,
+  ...props
+}) => {
+  const handleIndexChange = (index: number) => {
+    onIndexChange(index);
+    const routes = props.navigationState.routes;
+    const nextRoute = routes[index];
+    onRouteChange(nextRoute);
+  };
+
   const renderTabBar = (
     tabBarProps: SceneRendererProps & {
       navigationState: NavigationState<{key: string; title: string}>;
@@ -27,12 +41,18 @@ export const CustomTabView: React.FC<CustomTabviewProps> = ({...props}) => {
   ) => {
     const currentTabIndex = tabBarProps.navigationState.index;
     return (
-      <Box flexDirection="row">
-        {tabBarProps.navigationState.routes.map((route, i) => {
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        style={{flexGrow: 0}} // make flatlist fits item high
+        horizontal={true}
+        data={tabBarProps.navigationState.routes}
+        keyExtractor={route => route.key}
+        renderItem={({item: route, index: i}) => {
           const color =
             currentTabIndex === i ? Colors.parisGreen : Colors.textSecondary;
           const borderColor =
             currentTabIndex === i ? Colors.parisGreen : Colors.textSecondary;
+          const currentRoute = tabBarProps.navigationState.routes[i];
 
           return (
             <TouchableOpacity
@@ -40,7 +60,8 @@ export const CustomTabView: React.FC<CustomTabviewProps> = ({...props}) => {
               activeOpacity={0.8}
               style={getTabBarButtonStyle(borderColor)}
               onPress={() => {
-                props.onIndexChange(i);
+                onIndexChange(i);
+                onRouteChange(currentRoute);
               }}>
               <Animated.Text
                 style={{
@@ -51,10 +72,16 @@ export const CustomTabView: React.FC<CustomTabviewProps> = ({...props}) => {
               </Animated.Text>
             </TouchableOpacity>
           );
-        })}
-      </Box>
+        }}
+      />
     );
   };
 
-  return <TabView {...props} renderTabBar={renderTabBar} />;
+  return (
+    <TabView
+      {...props}
+      onIndexChange={handleIndexChange}
+      renderTabBar={renderTabBar}
+    />
+  );
 };
