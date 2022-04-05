@@ -13,6 +13,7 @@ addPouchPlugin(SQLiteAdapter);
 addPouchPlugin(PouchDBAdapterHttp);
 
 let rxDB: RxDatabase<AppCollections>;
+let isCollectionsAdded = false;
 
 async function createRxDatabaseAsync() {
   // re-create RxDatabase by using the function below it not override existing data
@@ -30,7 +31,7 @@ export async function initRxDatabaseAsync() {
   }
 
   // make sure we add the collection(s) only one time
-  if (!rxDB.word) {
+  if (!isCollectionsAdded) {
     await rxDB.addCollections({
       word: {
         schema: wordSchema,
@@ -39,6 +40,7 @@ export async function initRxDatabaseAsync() {
         schema: tagSchema,
       },
     });
+    isCollectionsAdded = true;
   }
 
   return rxDB;
