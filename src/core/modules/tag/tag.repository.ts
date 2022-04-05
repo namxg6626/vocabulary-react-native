@@ -1,11 +1,12 @@
 import {ITagRepository} from '@core/modules/tag/interfaces/tag-repository.interface';
 import {initRxDatabaseAsync} from '@core/database/rxdb';
-import {RxCollection} from 'rxdb';
+import {RxCollection, RxDocument} from 'rxdb';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import _ from 'lodash';
 import {TagDto} from '@core/modules/tag/dtos/tag.dto';
 import {v4 as uuid} from 'uuid';
 import dayjs from 'dayjs';
+import {IWord} from '@core/modules/word/inferfaces/word.interface';
 
 export class TagRepository implements ITagRepository {
   private get Tag(): RxCollection<ITag> {
@@ -61,5 +62,14 @@ export class TagRepository implements ITagRepository {
 
   getAllDocuments = () => {
     return this.Tag.find().exec();
+  };
+
+  getWordsByTag = async (tagRxId: string) => {
+    const tag = await this.Tag.findOne().where('rxId').eq(tagRxId).exec();
+    const words: RxDocument<IWord>[] = await tag?.populate('wordIds');
+    if (_.isEmpty(words)) {
+      return [];
+    }
+    return words;
   };
 }

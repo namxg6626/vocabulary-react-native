@@ -4,6 +4,7 @@ import {TagDto} from '@core/modules/tag/dtos/tag.dto';
 import {RxDocument} from 'rxdb';
 import {RxDocumentPromise} from '@core/base/base-repository.interface';
 import {WordDto} from '@core/modules/word/dtos/word.dto';
+import {IWord} from '@core/modules/word/inferfaces/word.interface';
 
 export interface ITagService extends BaseService<ITag, TagDto> {
   getAllDocuments: () => Promise<RxDocument<ITag>[] | null>;
@@ -11,4 +12,5 @@ export interface ITagService extends BaseService<ITag, TagDto> {
     tagRxId: string,
     wordDto: WordDto,
   ) => RxDocumentPromise<ITag>;
+  getWordsByTag: (tagRxId: string) => Promise<RxDocument<IWord>[]>;
 }

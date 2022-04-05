@@ -52,4 +52,8 @@ export class TagService implements ITagService {
     }
     return tag;
   };
+
+  getWordsByTag(tagRxId: string) {
+    return this.tagRepository.getWordsByTag(tagRxId);
+  }
 }
