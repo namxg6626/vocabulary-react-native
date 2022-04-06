@@ -25,6 +25,7 @@ export const PressableIcon: React.FC<PressableIconProps> = ({
 
   return (
     <Pressable
+      justifyContent={'center'}
       onLayout={handleLayout}
       borderRadius={height / 2}
       width={height}
@@ -34,7 +35,9 @@ export const PressableIcon: React.FC<PressableIconProps> = ({
           .toRgbString(),
       }}
       {...props}>
-      <Box m={2}>{icon}</Box>
+      <Box m={2} justifyContent={'center'} alignItems={'center'}>
+        {icon}
+      </Box>
     </Pressable>
   );
 };
