@@ -78,7 +78,22 @@ export class YourWordsController extends React.Component<
     }
   };
 
+  deleteWord = async (wordRxId: string, currentTagRxId: string = '') => {
+    await this.wordService.deleteById(wordRxId);
+    if (currentTagRxId) {
+      await this.getWordsByTag(currentTagRxId);
+    } else {
+      await this.getAllWords();
+    }
+  };
+
   render() {
-    return <YourWordsScreen {...this.state} onTabChange={this.getWordsByTag} />;
+    return (
+      <YourWordsScreen
+        {...this.state}
+        onDeleteWord={this.deleteWord}
+        onTabChange={this.getWordsByTag}
+      />
+    );
   }
 }
