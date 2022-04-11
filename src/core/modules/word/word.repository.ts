@@ -49,6 +49,14 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
     return query.update({...dto, updatedAt: WordRepository.now.toISOString()});
   };
 
+  async atomicPatch(rxId: string, dto: Partial<WordDto>) {
+    const word = await this.Word.findOne().where('rxId').eq(rxId).exec();
+    if (word) {
+      return await word.atomicPatch(dto);
+    }
+    return null;
+  }
+
   insert = (dto: WordDto) => {
     return this.Word.insert({
       ...dto,

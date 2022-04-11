@@ -55,6 +55,14 @@ export class TagRepository implements ITagRepository {
     return query.update({...dto, updatedAt: now.toISOString()});
   };
 
+  async atomicPatch(rxId: string, dto: Partial<TagDto>) {
+    const document = await this.Tag.findOne().where('rxId').eq(rxId).exec();
+    if (document) {
+      return await document.atomicPatch(dto);
+    }
+    return null;
+  }
+
   deleteById = (rxId: string) => {
     const query = this.Tag.findOne().where('rxId').eq(rxId);
     return query.remove();
