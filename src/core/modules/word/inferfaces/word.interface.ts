@@ -4,4 +4,5 @@ export interface IWord extends BaseModel {
   word: string;
   meaning: string;
   image?: any;
+  tagRxId?: string;
 }

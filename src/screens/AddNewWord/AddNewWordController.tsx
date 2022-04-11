@@ -1,5 +1,5 @@
 import React from 'react';
-import {InStackScreenProps} from '@navigation/navigation';
+import {MainStackScreenProps} from '@navigation/navigation';
 import {AddNewWordScreen, AddNewWordForm} from './AddNewWordScreen';
 import {WordService} from '@core/modules/word/word.service';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
@@ -10,7 +10,7 @@ import {IMessageService} from '@core/modules/message/message-service.interface';
 import {MessageService} from '@core/modules/message/message.service';
 import _ from 'lodash';
 
-export type AddNewWordControllerProps = InStackScreenProps<'AddNewWord'> & {
+export type AddNewWordControllerProps = MainStackScreenProps<'AddNewWord'> & {
   wordService?: IWordService;
   tagService?: ITagService;
   messageService?: IMessageService;

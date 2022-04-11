@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {InStackScreenProps} from '@navigation/navigation';
+import {MainStackScreenProps} from '@navigation/navigation';
 import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
 import {YourTagsScreen} from '@screens/YourTags/YourTagsScreen';
 import {TagService} from '@core/modules/tag/tag.service';
@@ -8,7 +8,7 @@ import {TagDto} from '@core/modules/tag/dtos/tag.dto';
 import {IMessageService} from '@core/modules/message/message-service.interface';
 import {MessageService} from '@core/modules/message/message.service';
 
-export type YourTagsControllerProps = InStackScreenProps<'YourTags'> & {
+export type YourTagsControllerProps = MainStackScreenProps<'YourTags'> & {
   tagService?: ITagService;
   messageService?: IMessageService;
 };

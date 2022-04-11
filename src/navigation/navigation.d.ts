@@ -10,6 +10,6 @@ type MainStackParamList = {
   YourTags: undefined;
 };
 
-export type InStackScreenProps<
+export type MainStackScreenProps<
   ScreenName extends keyof MainStackParamList = any,
 > = NativeStackScreenProps<MainStackParamList, ScreenName>;

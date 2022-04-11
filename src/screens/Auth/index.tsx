@@ -11,7 +11,7 @@ import {useMutation} from '@apollo/client';
 import {useForm, Controller} from 'react-hook-form';
 import * as validationSchema from './validationSchema';
 import {yupResolver} from '@hookform/resolvers/yup';
-import type {InStackScreenProps} from '@navigation/navigation';
+import type {MainStackScreenProps} from '@navigation/navigation';
 
 type AuthFormValues = {
   email: string;
@@ -21,7 +21,7 @@ type AuthFormValues = {
 
 type AuthMode = 'signin' | 'signup';
 
-export const AuthScreen: FC<InStackScreenProps<'Auth'>> = ({navigation}) => {
+export const AuthScreen: FC<MainStackScreenProps<'Auth'>> = ({navigation}) => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('signin');
 

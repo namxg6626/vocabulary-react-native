@@ -1,12 +1,16 @@
 import {WordDto} from './dtos/word.dto';
 import {WordRepository} from './word.repository';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
+import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
+import {TagService} from '@core/modules/tag/tag.service';
 
 export class WordService implements IWordService {
   private wordRepository: WordRepository;
+  private tagService: ITagService;
 
-  constructor(wordRepository?: WordRepository) {
+  constructor(wordRepository?: WordRepository, tagService?: ITagService) {
     this.wordRepository = wordRepository || new WordRepository();
+    this.tagService = tagService || new TagService(undefined, this);
   }
 
   initializeRepositoryCollection = () => {

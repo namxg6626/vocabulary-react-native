@@ -5,7 +5,7 @@ import {StyleSheet, View} from 'react-native';
 import type {LayoutChangeEvent} from 'react-native';
 import {Screen} from '@components/Screen';
 
-import type {InStackScreenProps} from '@navigation/navigation';
+import type {MainStackScreenProps} from '@navigation/navigation';
 import {Colors} from '@theme/colors';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {HelloBG} from './components/HelloBG';
@@ -23,7 +23,7 @@ const QUOTE = {
 
 const SPACING = widthPercentageToDP(5);
 
-export const DashboardScreen: FC<InStackScreenProps<'Dashboard'>> = ({
+export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
   route,
   navigation,
 }) => {
