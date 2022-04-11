@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {FlatList, Platform} from 'react-native';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import {Screen, CustomButton, Empty} from '@components/index';
@@ -17,20 +17,39 @@ enum ModalName {
 export type YourTagsScreenProps = {
   tags: ITag[];
   addTag: (tagName: string) => Promise<ITag | undefined>;
-  deleteTag: (tagId: string) => Promise<void>;
+  deleteTag: (tagRxId: string) => Promise<void>;
+  updateTag: (tagRxId: string, newTagName: string) => Promise<void>;
 };
 
 export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({
   tags,
   addTag,
   deleteTag,
+  updateTag,
 }) => {
   const [modalNames, modalNameActions] = useSet<ModalName>();
+  const [tagToEdit, setTagToEdit] = useState<ITag>();
 
-  const submitHandler = (value: TagFormValue) => {
+  const addTagSubmitHandler = (value: TagFormValue) => {
     addTag(value.name).finally(() => {
       modalNameActions.clear();
     });
+  };
+
+  const openEditModal = (tag: ITag) => {
+    modalNameActions.add(ModalName.EDIT_TAG);
+    setTagToEdit(tag);
+  };
+  const closeEditModal = () => {
+    modalNameActions.clear();
+    setTagToEdit(undefined);
+  };
+  const editTagSubmitHandler = (value: TagFormValue) => {
+    if (tagToEdit) {
+      updateTag(tagToEdit.rxId, value.name).then(() => {
+        closeEditModal();
+      });
+    }
   };
 
   const handleDeleteTagPress = (tag: ITag) => {
@@ -55,7 +74,7 @@ export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({
             data={tags}
             renderItem={({item}) => (
               <TagItem
-                onPenPress={() => console.log(item.rxId)}
+                onPenPress={() => openEditModal(item)}
                 onBackspacePress={() => handleDeleteTagPress(item)}
                 tag={item}
               />
@@ -72,8 +91,15 @@ export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({
       <TagModal
         header={'New tag'}
         isOpen={modalNames.includes(ModalName.ADD_NEW_TAG)}
-        onConfirm={submitHandler}
+        onConfirm={addTagSubmitHandler}
         onClose={modalNameActions.clear}
+      />
+      <TagModal
+        header={'Edit tag'}
+        isOpen={modalNames.includes(ModalName.EDIT_TAG)}
+        onConfirm={editTagSubmitHandler}
+        onClose={closeEditModal}
+        defaultValue={tagToEdit}
       />
       <TagsList />
       <CustomButton onPress={() => modalNameActions.add(ModalName.ADD_NEW_TAG)}>

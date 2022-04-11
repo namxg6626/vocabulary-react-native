@@ -88,12 +88,22 @@ export class YourTagsController extends Component<
     });
   };
 
+  updateTagName = async (tagRxId: string, newName: string) => {
+    await this.tagService.updateTagName(tagRxId, newName);
+    await this.getAllTags();
+    this.messageService.pushMessage({
+      title: 'Tag is updated',
+      status: 'success',
+    });
+  };
+
   render() {
     return (
       <YourTagsScreen
         tags={this.state.tags}
         addTag={this.addTag}
         deleteTag={this.deleteTag}
+        updateTag={this.updateTagName}
       />
     );
   }

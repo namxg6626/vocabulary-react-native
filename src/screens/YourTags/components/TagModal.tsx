@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button, FormControl, HStack, Modal} from 'native-base';
 import {CustomInput, KeyboardAvoidingView} from '@components/index';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {useForm, Controller} from 'react-hook-form';
+import isEmpty from 'lodash/isEmpty';
 
 export type TagFormValue = {
   name: string;
@@ -13,6 +14,7 @@ export type TagModalProps = {
   isOpen: boolean;
   onConfirm: (values: TagFormValue) => void;
   onClose: () => void;
+  defaultValue?: TagFormValue;
 };
 
 export const TagModal: React.FC<TagModalProps> = ({
@@ -20,12 +22,26 @@ export const TagModal: React.FC<TagModalProps> = ({
   isOpen,
   onConfirm,
   onClose,
+  defaultValue,
 }) => {
   const {
     control,
     handleSubmit,
     formState: {errors},
+    reset,
   } = useForm<TagFormValue>();
+  const [isResetted, setIsResetted] = useState(false);
+
+  useEffect(() => {
+    if (!isEmpty(defaultValue) && !isResetted) {
+      reset({
+        name: defaultValue?.name,
+      });
+      setIsResetted(true);
+    } else if (isEmpty(defaultValue)) {
+      setIsResetted(false);
+    }
+  }, [defaultValue, reset, isResetted]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

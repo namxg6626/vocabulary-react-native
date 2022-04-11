@@ -12,7 +12,7 @@ export class TagService implements ITagService {
 
   constructor(tagRepository?: ITagRepository, wordService?: IWordService) {
     this.tagRepository = tagRepository || new TagRepository();
-    this.wordService = wordService || new WordService();
+    this.wordService = wordService || new WordService(undefined, this);
   }
 
   async initializeRepositoryCollection() {
@@ -30,6 +30,10 @@ export class TagService implements ITagService {
 
   updateById(rxId: string, dto: Partial<TagDto>) {
     return this.tagRepository.updateById(rxId, dto);
+  }
+
+  updateTagName(rxId: string, newTagName: string) {
+    return this.tagRepository.atomicPatch(rxId, {name: newTagName});
   }
 
   deleteById(rxId: string) {
