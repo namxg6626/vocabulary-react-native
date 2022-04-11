@@ -13,6 +13,9 @@ export const wordSchema: RxJsonSchema<IWord> = {
     rxId: {
       type: 'string',
     },
+    tagRxId: {
+      type: 'string',
+    },
     image: {
       type: 'string',
     },
