@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {MainStackScreenProps} from '@navigation/navigation';
+import {MainStackScreenProps} from '@navigation/index';
 import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
 import {YourTagsScreen} from '@screens/YourTags/YourTagsScreen';
 import {TagService} from '@core/modules/tag/tag.service';

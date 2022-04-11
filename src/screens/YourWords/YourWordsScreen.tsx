@@ -94,7 +94,7 @@ export const YourWordsScreen: React.FC<YourWordsScreenProps> = ({
   };
 
   return (
-    <Screen headerContent={'Your Words'} enableStatusBar>
+    <Screen>
       <CustomTabView
         navigationState={{index, routes}}
         renderScene={renderScene}

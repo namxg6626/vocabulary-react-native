@@ -6,7 +6,7 @@ import {CustomButton} from '@components/Button';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Colors} from '@theme/colors';
 import {WordDto} from '@core/modules/word/dtos/word.dto';
-import {addNewWordValidationSchema} from '@screens/AddNewWord/validation-schema';
+import {validationSchema} from '@screens/WordDetail/validation-schema';
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {KeyboardAvoidingView} from '@components/KeyboardAvoidingView';
@@ -14,27 +14,32 @@ import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 
 const SPACING = widthPercentageToDP(4);
 
-export type AddNewWordForm = WordDto & {
+export type WordDetailForm = WordDto & {
   tagRxId: string;
 };
 
-export interface IAddNewWordScreen {
+export interface WordDetailProps {
   tags: ITag[];
-  addNewWord: (dto: AddNewWordForm) => Promise<boolean>;
+  onSubmit: (dto: WordDetailForm) => Promise<boolean>;
+  actionLabel?: string;
 }
 
-export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord, tags}) => {
+export const WordDetailScreen: FC<WordDetailProps> = ({
+  onSubmit,
+  tags,
+  actionLabel = 'Action',
+}) => {
   const {
     handleSubmit,
     control,
     formState: {errors},
     reset,
-  } = useForm<AddNewWordForm>({
-    resolver: yupResolver(addNewWordValidationSchema),
+  } = useForm<WordDetailForm>({
+    resolver: yupResolver(validationSchema),
   });
 
-  const submitHandler = (values: AddNewWordForm) => {
-    addNewWord(values).then(done => {
+  const submitHandler = (values: WordDetailForm) => {
+    onSubmit(values).then(done => {
       if (done) {
         reset({
           word: '',
@@ -133,16 +138,14 @@ export const AddNewWordScreen: FC<IAddNewWordScreen> = ({addNewWord, tags}) => {
 
   const renderButton = () => {
     return (
-      <>
-        <CustomButton onPress={handleSubmit(submitHandler)}>
-          Add this word
-        </CustomButton>
-      </>
+      <CustomButton onPress={handleSubmit(submitHandler)}>
+        {actionLabel}
+      </CustomButton>
     );
   };
 
   return (
-    <Screen headerContent="Add word" enableStatusBar>
+    <Screen>
       <KeyboardAvoidingView>
         <VStack space={SPACING * 3}>
           {renderImageField()}

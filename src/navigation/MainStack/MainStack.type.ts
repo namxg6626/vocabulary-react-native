@@ -1,12 +1,14 @@
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-type MainStackParamList = {
+export type MainStackParamList = {
   Auth: undefined;
   Dashboard: {
     isGuest?: boolean;
   };
-  AddNewWord: undefined;
-  YourWords: undefined;
+  AddNewWord?: {
+    actionLabel: string;
+  };
+  ManageWords: undefined;
   YourTags: undefined;
 };
 

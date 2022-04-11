@@ -3,6 +3,7 @@ import {Box, HStack, Pressable, Text} from 'native-base';
 import {Colors} from '@theme/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
+import {SafeAreaView} from 'react-native';
 
 export interface IAppHeaderProps {
   headerContent: React.ReactNode;
@@ -40,8 +41,13 @@ export const AppHeader: FC<IAppHeaderProps> = ({
   };
 
   return (
-    <Box backgroundColor={Colors.gumental} pb={widthPercentageToDP(3)}>
-      {renderHeaderContent()}
-    </Box>
+    <SafeAreaView style={{backgroundColor: Colors.gumental}}>
+      <Box
+        px={widthPercentageToDP(6)}
+        py={widthPercentageToDP(3)}
+        backgroundColor={Colors.gumental}>
+        {renderHeaderContent()}
+      </Box>
+    </SafeAreaView>
   );
 };

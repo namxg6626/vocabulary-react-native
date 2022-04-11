@@ -11,7 +11,7 @@ import {useMutation} from '@apollo/client';
 import {useForm, Controller} from 'react-hook-form';
 import * as validationSchema from './validationSchema';
 import {yupResolver} from '@hookform/resolvers/yup';
-import type {MainStackScreenProps} from '@navigation/navigation';
+import type {MainStackScreenProps} from '@navigation/index';
 
 type AuthFormValues = {
   email: string;
@@ -237,7 +237,7 @@ export const AuthScreen: FC<MainStackScreenProps<'Auth'>> = ({navigation}) => {
   };
 
   return (
-    <Screen>
+    <Screen safeArea>
       {renderGuestRow()}
       {renderWellcome()}
       {renderFields()}

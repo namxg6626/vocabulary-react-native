@@ -1,6 +1,6 @@
 import React from 'react';
-import {MainStackScreenProps} from '@navigation/navigation';
-import {AddNewWordScreen, AddNewWordForm} from './AddNewWordScreen';
+import {MainStackScreenProps} from '@navigation/index';
+import {WordDetailScreen, WordDetailForm} from './WordDetailScreen';
 import {WordService} from '@core/modules/word/word.service';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
 import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
@@ -8,21 +8,20 @@ import {TagService} from '@core/modules/tag/tag.service';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import {IMessageService} from '@core/modules/message/message-service.interface';
 import {MessageService} from '@core/modules/message/message.service';
-import _ from 'lodash';
 
-export type AddNewWordControllerProps = MainStackScreenProps<'AddNewWord'> & {
+export type WordDetailControllerProps = MainStackScreenProps<'AddNewWord'> & {
   wordService?: IWordService;
   tagService?: ITagService;
   messageService?: IMessageService;
 };
 
-type AddNewWordControllerState = {
+type WordDetailControllerState = {
   tags: ITag[];
 };
 
-export class AddNewWordController extends React.Component<
-  AddNewWordControllerProps,
-  AddNewWordControllerState
+export class WordDetailController extends React.Component<
+  WordDetailControllerProps,
+  WordDetailControllerState
 > {
   wordService: IWordService;
   tagService: ITagService;
@@ -31,11 +30,15 @@ export class AddNewWordController extends React.Component<
     tags: [],
   };
 
-  constructor(props: AddNewWordControllerProps) {
+  constructor(props: WordDetailControllerProps) {
     super(props);
     this.wordService = props.wordService || new WordService();
     this.tagService = props.tagService || new TagService();
     this.messageService = props.messageService || new MessageService();
+  }
+
+  get route() {
+    return this.props.route;
   }
 
   async componentDidMount() {
@@ -48,8 +51,8 @@ export class AddNewWordController extends React.Component<
     }
   }
 
-  addNewWord = async (formValue: AddNewWordForm) => {
-    const wordDto = _.omit(formValue, 'tagRxId');
+  handleSubmit = async (formValue: WordDetailForm) => {
+    const wordDto = formValue;
     const tagRxId = formValue.tagRxId;
     let result;
     if (tagRxId) {
@@ -82,7 +85,11 @@ export class AddNewWordController extends React.Component<
 
   render() {
     return (
-      <AddNewWordScreen tags={this.state.tags} addNewWord={this.addNewWord} />
+      <WordDetailScreen
+        actionLabel={this.route?.params?.actionLabel}
+        tags={this.state.tags}
+        onSubmit={this.handleSubmit}
+      />
     );
   }
 }

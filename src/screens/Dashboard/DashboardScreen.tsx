@@ -5,7 +5,7 @@ import {StyleSheet, View} from 'react-native';
 import type {LayoutChangeEvent} from 'react-native';
 import {Screen} from '@components/Screen';
 
-import type {MainStackScreenProps} from '@navigation/navigation';
+import type {MainStackScreenProps} from '@navigation/index';
 import {Colors} from '@theme/colors';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {HelloBG} from './components/HelloBG';
@@ -97,7 +97,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
               }
             />
             <LargeColorizedButton
-              onPress={() => navigation.push('YourWords')}
+              onPress={() => navigation.push('ManageWords')}
               $bgColor={tinycolor(Colors.lightningYellow)
                 .darken(5)
                 .toRgbString()}
@@ -145,7 +145,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
   };
 
   return (
-    <Screen enableStatusBar>
+    <Screen safeArea enableStatusBar>
       <VStack space={SPACING}>
         {renderHello()}
         {renderButtons()}

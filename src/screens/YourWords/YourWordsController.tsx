@@ -1,5 +1,5 @@
 import React from 'react';
-import {MainStackScreenProps} from '@navigation/navigation';
+import {MainStackScreenProps} from '@navigation/index';
 import {WordService} from '@core/modules/word/word.service';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
 import {YourWordsScreen} from '@screens/YourWords/YourWordsScreen';
@@ -9,7 +9,7 @@ import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
 import {TagService} from '@core/modules/tag/tag.service';
 import {isUUID} from '@utils/index';
 
-export type YourWordsProps = MainStackScreenProps<'YourWords'> & {
+export type YourWordsProps = MainStackScreenProps<'ManageWords'> & {
   wordService?: IWordService;
   tagService?: ITagService;
 };

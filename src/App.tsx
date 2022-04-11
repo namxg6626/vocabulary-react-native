@@ -13,7 +13,7 @@ import {NativeBaseProvider, Text, Toast} from 'native-base';
 import {ApolloProvider} from '@apollo/client';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {MainStack} from '@navigation/MainStack';
+import {MainStack} from '@navigation/MainStack/MainStack';
 import {apolloClient} from '../apollo.client';
 import {theme} from '@theme/index';
 
