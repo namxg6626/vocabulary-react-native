@@ -36,6 +36,17 @@ export class TagService implements ITagService {
     return this.tagRepository.atomicPatch(rxId, {name: newTagName});
   }
 
+  async removeWordFromTag(rxId: string, wordRxId: string) {
+    const tag = await this.findById(rxId);
+    let newWordRxIds: string[] = [];
+    if (tag && tag.wordIds) {
+      newWordRxIds = tag.wordIds.filter(_wordRxId => _wordRxId !== wordRxId);
+    }
+    return this.tagRepository.atomicPatch(rxId, {
+      wordIds: newWordRxIds,
+    });
+  }
+
   deleteById(rxId: string) {
     return this.tagRepository.deleteById(rxId);
   }

@@ -14,4 +14,8 @@ export interface ITagService extends BaseService<ITag, TagDto> {
   ) => RxDocumentPromise<ITag>;
   getWordsByTag: (tagRxId: string) => Promise<RxDocument<IWord>[]>;
   updateTagName: (rxId: string, newTagName: string) => RxDocumentPromise<ITag>;
+  removeWordFromTag: (
+    rxId: string,
+    wordRxId: string,
+  ) => RxDocumentPromise<ITag>;
 }

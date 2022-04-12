@@ -1,10 +1,9 @@
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MainStackParamList} from '../MainStack/MainStack.type';
 
 export type ManageWordsParamList = {
   YourWords: undefined;
-  EditWord?: {
-    actionLabel: string;
-  };
+  EditWord?: MainStackParamList['AddNewWord'];
 };
 
 export type ManageWordsScreenProps<

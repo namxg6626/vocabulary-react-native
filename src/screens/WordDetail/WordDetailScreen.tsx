@@ -1,5 +1,5 @@
 import {Box, FormControl, HStack, Select, VStack} from 'native-base';
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {Screen} from '@components/Screen';
 import {CustomInput} from '@components/Input';
 import {CustomButton} from '@components/Button';
@@ -11,6 +11,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {KeyboardAvoidingView} from '@components/KeyboardAvoidingView';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
+import _ from 'lodash';
 
 const SPACING = widthPercentageToDP(4);
 
@@ -22,12 +23,14 @@ export interface WordDetailProps {
   tags: ITag[];
   onSubmit: (dto: WordDetailForm) => Promise<boolean>;
   actionLabel?: string;
+  initialValue?: Partial<WordDetailForm>;
 }
 
 export const WordDetailScreen: FC<WordDetailProps> = ({
   onSubmit,
   tags,
   actionLabel = 'Action',
+  initialValue,
 }) => {
   const {
     handleSubmit,
@@ -37,6 +40,14 @@ export const WordDetailScreen: FC<WordDetailProps> = ({
   } = useForm<WordDetailForm>({
     resolver: yupResolver(validationSchema),
   });
+
+  useEffect(() => {
+    if (initialValue) {
+      reset({
+        ..._.omit(initialValue, 'rxId', 'createdAt', 'updatedAt'),
+      });
+    }
+  }, [initialValue, reset]);
 
   const submitHandler = (values: WordDetailForm) => {
     onSubmit(values).then(done => {

@@ -25,8 +25,19 @@ export class WordService implements IWordService {
     return this.wordRepository.findById(rxId);
   };
 
-  updateById = (rxId: string, dto: Partial<WordDto>) => {
-    return this.wordRepository.updateById(rxId, dto);
+  updateById = async (rxId: string, dto: Partial<WordDto>) => {
+    const originalWord = await this.findById(rxId);
+    if (originalWord && dto.tagRxId && originalWord?.tagRxId !== dto.tagRxId) {
+      await this.tagService.removeWordFromTag(
+        originalWord?.tagRxId || '',
+        originalWord.rxId,
+      );
+      await this.tagService.addNewWordToTag(
+        dto.tagRxId,
+        originalWord.rxId || '',
+      );
+    }
+    return await this.wordRepository.atomicPatch(rxId, dto);
   };
 
   deleteById = (rxId: string) => {

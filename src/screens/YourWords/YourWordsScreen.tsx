@@ -15,6 +15,7 @@ export type YourWordsScreenProps = {
   tags: ITag[];
   onTabChange?: (tagRxId: string) => void;
   onDeleteWord?: (wordRxId: string, currentTagRxId: string) => Promise<any>;
+  onPenPress?: (item: IWord) => any;
 };
 
 const SPACING = widthPercentageToDP(4);
@@ -25,6 +26,7 @@ export const YourWordsScreen: React.FC<YourWordsScreenProps> = ({
   tags,
   onTabChange = _.noop,
   onDeleteWord = _.noop,
+  onPenPress = _.noop,
 }) => {
   const [routes, setRoutes] = React.useState<Route[]>(() => [
     {key: 'All Words', title: 'All Words'},
@@ -82,7 +84,10 @@ export const YourWordsScreen: React.FC<YourWordsScreenProps> = ({
               </Text>
               <Text>{item.meaning}</Text>
             </Box>
-            <ItemActions onBackspacePress={() => handleDeleteWord(item)} />
+            <ItemActions
+              onBackspacePress={() => handleDeleteWord(item)}
+              onPenPress={() => onPenPress(item)}
+            />
           </HStack>
         )}
       />

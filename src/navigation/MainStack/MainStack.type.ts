@@ -1,4 +1,5 @@
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {IWord} from '@core/modules/word/inferfaces/word.interface';
 
 export type MainStackParamList = {
   Auth: undefined;
@@ -7,6 +8,7 @@ export type MainStackParamList = {
   };
   AddNewWord?: {
     actionLabel: string;
+    initialValue?: IWord;
   };
   ManageWords: undefined;
   YourTags: undefined;

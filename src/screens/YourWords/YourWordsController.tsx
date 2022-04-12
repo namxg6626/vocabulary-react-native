@@ -1,5 +1,5 @@
 import React from 'react';
-import {MainStackScreenProps} from '@navigation/index';
+import {MainStackScreenProps, ManageWordsScreenProps} from '@navigation/index';
 import {WordService} from '@core/modules/word/word.service';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
 import {YourWordsScreen} from '@screens/YourWords/YourWordsScreen';
@@ -9,7 +9,7 @@ import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
 import {TagService} from '@core/modules/tag/tag.service';
 import {isUUID} from '@utils/index';
 
-export type YourWordsProps = MainStackScreenProps<'ManageWords'> & {
+export type YourWordsProps = ManageWordsScreenProps<'YourWords'> & {
   wordService?: IWordService;
   tagService?: ITagService;
 };
@@ -34,6 +34,10 @@ export class YourWordsController extends React.Component<
     super(props);
     this.wordService = props.wordService || new WordService();
     this.tagService = props.tagService || new TagService();
+  }
+
+  private get navigation() {
+    return this.props.navigation;
   }
 
   async componentDidMount() {
@@ -87,12 +91,20 @@ export class YourWordsController extends React.Component<
     }
   };
 
+  handlePenPress = (item: IWord) => {
+    this.navigation.push('EditWord', {
+      actionLabel: 'Edit',
+      initialValue: item,
+    });
+  };
+
   render() {
     return (
       <YourWordsScreen
         {...this.state}
         onDeleteWord={this.deleteWord}
         onTabChange={this.getWordsByTag}
+        onPenPress={this.handlePenPress}
       />
     );
   }
