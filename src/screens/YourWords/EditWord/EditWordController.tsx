@@ -13,16 +13,29 @@ export class EditWordController extends WordDetailController {
     super(props as any);
   }
 
+  protected get navigation() {
+    return this.props
+      .navigation as unknown as EditWordControllerProps['navigation'];
+  }
+
   handleSubmit = async (formValue: WordDetailForm) => {
-    const wordRxId = this.route.params?.initialValue?.rxId;
+    const initialValue = this.route.params?.initialValue;
+    const wordRxId = initialValue?.rxId;
     if (wordRxId) {
       const result = await this.wordService.updateById(wordRxId, formValue);
-      this.messageService.pushMessage({
-        title: 'Test',
-        description: formValue.word,
-        status: 'success',
-      });
-      return !!result;
+      const hasResult = !!result;
+
+      if (hasResult) {
+        this.messageService.pushMessage({
+          title: 'Updated!',
+          status: 'success',
+        });
+        this.navigation.navigate('YourWords', {
+          tagRxId: initialValue?.tagRxId || '',
+        });
+      }
+
+      return hasResult;
     }
 
     return false;

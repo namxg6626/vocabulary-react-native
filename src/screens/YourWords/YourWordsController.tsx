@@ -1,5 +1,6 @@
 import React from 'react';
-import {MainStackScreenProps, ManageWordsScreenProps} from '@navigation/index';
+import {Subject} from 'rxjs';
+import {ManageWordsScreenProps} from '@navigation/index';
 import {WordService} from '@core/modules/word/word.service';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
 import {YourWordsScreen} from '@screens/YourWords/YourWordsScreen';
@@ -23,6 +24,8 @@ export class YourWordsController extends React.Component<
   YourWordsProps,
   YourWordsState
 > {
+  updateCurrentTab$ = new Subject<void>();
+
   wordService: IWordService;
   tagService: ITagService;
   state = {
@@ -36,8 +39,12 @@ export class YourWordsController extends React.Component<
     this.tagService = props.tagService || new TagService();
   }
 
-  private get navigation() {
+  protected get navigation() {
     return this.props.navigation;
+  }
+
+  protected get route() {
+    return this.props.route;
   }
 
   async componentDidMount() {
@@ -45,6 +52,15 @@ export class YourWordsController extends React.Component<
     await this.tagService.initializeRepositoryCollection();
     await this.getAllWords();
     await this.getAllTags();
+  }
+
+  componentDidUpdate(prevProps: Readonly<YourWordsProps>) {
+    const currentTagRxId = this.route.params?.tagRxId;
+    const prevTagRxId = prevProps.route.params?.tagRxId;
+
+    if (currentTagRxId !== prevTagRxId) {
+      this.getWordsByTag(currentTagRxId || '');
+    }
   }
 
   getAllWords = async () => {
@@ -92,7 +108,7 @@ export class YourWordsController extends React.Component<
   };
 
   handlePenPress = (item: IWord) => {
-    this.navigation.push('EditWord', {
+    this.navigation.navigate('EditWord', {
       actionLabel: 'Edit',
       initialValue: item,
     });
