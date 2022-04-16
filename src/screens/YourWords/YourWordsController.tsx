@@ -48,8 +48,6 @@ export class YourWordsController extends React.Component<
   }
 
   async componentDidMount() {
-    await this.wordService.initializeRepositoryCollection();
-    await this.tagService.initializeRepositoryCollection();
     await this.getAllWords();
     await this.getAllTags();
   }
@@ -65,7 +63,7 @@ export class YourWordsController extends React.Component<
 
   getAllWords = async () => {
     const words = await this.wordService.getAllDocuments();
-    if (words.length) {
+    if (words) {
       this.setState({
         words: words.map(w => w.toJSON()),
       });

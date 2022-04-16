@@ -15,11 +15,6 @@ export class TagService implements ITagService {
     this.wordService = wordService || new WordService(undefined, this);
   }
 
-  async initializeRepositoryCollection() {
-    await this.wordService.initializeRepositoryCollection();
-    await this.tagRepository.initializeCollection();
-  }
-
   insert(dto: TagDto) {
     return this.tagRepository.insert(dto);
   }
@@ -36,17 +31,6 @@ export class TagService implements ITagService {
     return this.tagRepository.atomicPatch(rxId, {name: newTagName});
   }
 
-  async removeWordFromTag(rxId: string, wordRxId: string) {
-    const tag = await this.findById(rxId);
-    let newWordRxIds: string[] = [];
-    if (tag && tag.wordIds) {
-      newWordRxIds = tag.wordIds.filter(_wordRxId => _wordRxId !== wordRxId);
-    }
-    return this.tagRepository.atomicPatch(rxId, {
-      wordIds: newWordRxIds,
-    });
-  }
-
   deleteById(rxId: string) {
     return this.tagRepository.deleteById(rxId);
   }
@@ -59,14 +43,26 @@ export class TagService implements ITagService {
     const tag = await this.tagRepository.findById(tagRxId);
     const newWord = await this.wordService.insert(wordDto);
     if (tag && newWord) {
-      return await tag.update({
-        $push: {
-          wordIds: newWord.rxId,
-        },
-      });
+      return this.tagRepository.addWordToTag(tag.rxId, newWord.rxId);
     }
     return tag;
   };
+
+  addWordToTag(tagRxId: string, wordRxId: string) {
+    return this.tagRepository.addWordToTag(tagRxId, wordRxId);
+  }
+
+  removeWordFromTag(tagRxId: string, wordRxId: string) {
+    return this.tagRepository.removeWordFromTag(tagRxId, wordRxId);
+  }
+
+  async changeTagOfWord(tagRxId: string, wordRxId: string) {
+    const word = await this.wordService.findById(wordRxId);
+    if (word?.tagRxId) {
+      await this.removeWordFromTag(word.tagRxId, wordRxId);
+    }
+    return await this.addWordToTag(tagRxId, wordRxId);
+  }
 
   getWordsByTag(tagRxId: string) {
     return this.tagRepository.getWordsByTag(tagRxId);

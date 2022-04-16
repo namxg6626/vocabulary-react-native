@@ -13,56 +13,58 @@ const Stack = createNativeStackNavigator<MainStackParamList>();
 
 export const MainStack = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-        headerShown: true,
-        header: props => (
-          <AppHeader
-            headerContent={props.options.title}
-            onBackPress={props.navigation.goBack}
-          />
-        ),
-      }}
-      initialRouteName="Auth">
-      <Stack.Screen
-        options={{
-          headerShown: false,
+    <>
+      <Stack.Navigator
+        screenOptions={{
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: true,
+          header: props => (
+            <AppHeader
+              headerContent={props.options.title}
+              onBackPress={props.navigation.goBack}
+            />
+          ),
         }}
-        name="Auth"
-        component={AuthScreen}
-      />
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="Dashboard"
-        component={DashboardScreen}
-      />
-      <Stack.Screen
-        initialParams={{
-          actionLabel: 'Add this word',
-        }}
-        options={{
-          title: 'New word',
-        }}
-        name="AddNewWord"
-        component={WordDetailController}
-      />
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="ManageWords"
-        component={ManageWordsStack}
-      />
-      <Stack.Screen
-        options={{
-          title: 'Your tags',
-        }}
-        name="YourTags"
-        component={YourTagsController}
-      />
-    </Stack.Navigator>
+        initialRouteName="Auth">
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="Auth"
+          component={AuthScreen}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="Dashboard"
+          component={DashboardScreen}
+        />
+        <Stack.Screen
+          initialParams={{
+            actionLabel: 'Add this word',
+          }}
+          options={{
+            title: 'New word',
+          }}
+          name="AddNewWord"
+          component={WordDetailController}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="ManageWords"
+          component={ManageWordsStack}
+        />
+        <Stack.Screen
+          options={{
+            title: 'Your tags',
+          }}
+          name="YourTags"
+          component={YourTagsController}
+        />
+      </Stack.Navigator>
+    </>
   );
 };

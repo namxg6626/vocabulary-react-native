@@ -13,10 +13,6 @@ export class WordService implements IWordService {
     this.tagService = tagService || new TagService(undefined, this);
   }
 
-  initializeRepositoryCollection = () => {
-    return this.wordRepository.initializeCollection();
-  };
-
   insert = (dto: WordDto) => {
     return this.wordRepository.insert(dto);
   };
@@ -26,22 +22,25 @@ export class WordService implements IWordService {
   };
 
   updateById = async (rxId: string, dto: Partial<WordDto>) => {
-    const originalWord = await this.findById(rxId);
-    if (originalWord && dto.tagRxId && originalWord?.tagRxId !== dto.tagRxId) {
-      await this.tagService.removeWordFromTag(
-        originalWord?.tagRxId || '',
-        originalWord.rxId,
-      );
-      await this.tagService.addNewWordToTag(
+    const beforeUpdatedWord = await this.findById(rxId);
+    if (dto.tagRxId && beforeUpdatedWord) {
+      await this.tagService.changeTagOfWord(
         dto.tagRxId,
-        originalWord.rxId || '',
+        beforeUpdatedWord?.rxId || '',
       );
     }
     return await this.wordRepository.atomicPatch(rxId, dto);
   };
 
-  deleteById = (rxId: string) => {
-    return this.wordRepository.deleteById(rxId);
+  deleteById = async (rxId: string) => {
+    const desiredWord = await this.findById(rxId);
+    if (desiredWord && desiredWord.tagRxId) {
+      await this.tagService.removeWordFromTag(
+        desiredWord.tagRxId,
+        desiredWord.rxId,
+      );
+    }
+    return await this.wordRepository.deleteById(rxId);
   };
 
   getAllDocuments = () => {

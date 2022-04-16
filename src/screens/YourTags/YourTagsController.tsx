@@ -35,7 +35,6 @@ export class YourTagsController extends Component<
 
   async componentDidMount() {
     try {
-      await this.tagService.initializeRepositoryCollection();
       await this.getAllTags();
     } catch (e) {
       throw e;

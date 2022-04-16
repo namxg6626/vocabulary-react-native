@@ -25,6 +25,10 @@ async function createRxDatabaseAsync() {
   });
 }
 
+export function getRxDatabaseInstance() {
+  return rxDB ? rxDB : null;
+}
+
 export async function initRxDatabaseAsync() {
   if (!rxDB) {
     rxDB = await createRxDatabaseAsync();

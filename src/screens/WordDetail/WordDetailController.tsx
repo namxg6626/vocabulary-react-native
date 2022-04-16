@@ -43,8 +43,6 @@ export class WordDetailController extends React.Component<
 
   async componentDidMount() {
     try {
-      await this.wordService.initializeRepositoryCollection();
-      await this.tagService.initializeRepositoryCollection();
       await this.getAllTags();
     } catch (e) {
       throw e;

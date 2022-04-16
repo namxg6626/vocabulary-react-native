@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import {NativeBaseProvider, Text, Toast} from 'native-base';
+import {NativeBaseProvider, Text, Toast, Box} from 'native-base';
 import {ApolloProvider} from '@apollo/client';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -22,25 +22,43 @@ import 'react-native-get-random-values';
 import {MessageService} from '@core/modules/message/message.service';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Subscription} from 'rxjs';
+import {initRxDatabaseAsync} from '@core/database/rxdb';
+import {Colors} from '@theme/colors';
 
 // make things are identical on almost devices
 (Text as any).defaultProps = {};
 (Text as any).defaultProps.allowFontScaling = false;
 
-type AppProps = {
+type RootProps = {
   messageService?: IMessageService;
 };
 
-class App extends React.Component<AppProps, {}> {
+interface RootState {
+  ready: boolean;
+}
+
+class Root extends React.Component<RootProps, RootState> {
   messageService: IMessageService;
   subscription!: Subscription;
+  state = {
+    ready: false,
+  };
 
-  constructor(props: AppProps) {
+  constructor(props: RootProps) {
     super(props);
     this.messageService = props.messageService || new MessageService();
   }
 
   componentDidMount() {
+    this.subscribeMessage();
+    this.handleInitRxDatabase();
+  }
+
+  componentWillUnmount() {
+    this.subscription.unsubscribe();
+  }
+
+  subscribeMessage() {
     this.subscription = this.messageService.getMessage().subscribe(message => {
       Toast.show({
         ...message,
@@ -53,9 +71,20 @@ class App extends React.Component<AppProps, {}> {
     });
   }
 
-  componentWillUnmount() {
-    this.subscription.unsubscribe();
-  }
+  handleInitRxDatabase = () => {
+    initRxDatabaseAsync()
+      .then(() => {
+        this.setState({ready: true});
+      })
+      .catch(e => {
+        this.messageService.pushMessage({
+          title: 'Error🥲',
+          status: 'error',
+          description: e.message,
+        });
+        throw e;
+      });
+  };
 
   render() {
     return (
@@ -63,6 +92,17 @@ class App extends React.Component<AppProps, {}> {
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
             <MainStack />
+            <Box
+              display={this.state.ready ? 'none' : undefined}
+              position={'absolute'}
+              backgroundColor={Colors.charcoalGray}
+              top={0}
+              left={0}
+              height={'full'}
+              width={'full'}
+              opacity={0.3}
+              justifyContent={'center'}
+            />
           </NavigationContainer>
         </NativeBaseProvider>
       </ApolloProvider>
@@ -70,4 +110,4 @@ class App extends React.Component<AppProps, {}> {
   }
 }
 
-export default App;
+export default Root;

@@ -1,16 +1,16 @@
-import {initRxDatabaseAsync} from '@core/database/rxdb';
+import {getRxDatabaseInstance} from '@core/database/rxdb';
 import {BaseRepository} from '@core/base/base-repository.interface';
 import {RxCollection} from 'rxdb';
 import {IWord} from './inferfaces/word.interface';
 import {WordDto} from './dtos/word.dto';
 import dayjs from 'dayjs';
-import _ from 'lodash';
 import {v4 as uuid} from 'uuid';
 
 export class WordRepository implements BaseRepository<IWord, WordDto> {
-  constructor(wordCollection?: RxCollection<IWord>) {
-    if (wordCollection) {
-      this.Word = wordCollection;
+  constructor() {
+    const rxDb = getRxDatabaseInstance();
+    if (rxDb?.word) {
+      this.Word = rxDb.word;
     }
   }
 
@@ -32,13 +32,6 @@ export class WordRepository implements BaseRepository<IWord, WordDto> {
   }
 
   getCollection = () => this.Word;
-
-  initializeCollection = async () => {
-    if (_.isEmpty(this._Word)) {
-      const rxDB = await initRxDatabaseAsync();
-      this.Word = rxDB.word;
-    }
-  };
 
   findById = (rxId: string) => {
     return this.Word.findOne().where('rxId').eq(rxId).exec();

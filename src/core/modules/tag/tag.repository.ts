@@ -1,5 +1,5 @@
 import {ITagRepository} from '@core/modules/tag/interfaces/tag-repository.interface';
-import {initRxDatabaseAsync} from '@core/database/rxdb';
+import {initRxDatabaseAsync, getRxDatabaseInstance} from '@core/database/rxdb';
 import {RxCollection, RxDocument} from 'rxdb';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import _ from 'lodash';
@@ -7,8 +7,16 @@ import {TagDto} from '@core/modules/tag/dtos/tag.dto';
 import {v4 as uuid} from 'uuid';
 import dayjs from 'dayjs';
 import {IWord} from '@core/modules/word/inferfaces/word.interface';
+import {RxDocumentPromise} from '@core/base/base-repository.interface';
 
 export class TagRepository implements ITagRepository {
+  constructor() {
+    const rxDb = getRxDatabaseInstance();
+    if (rxDb?.tag) {
+      this.Tag = rxDb.tag;
+    }
+  }
+
   private get Tag(): RxCollection<ITag> {
     if (!this._Tag) {
       throw new Error('TagRepository; You need to initialize collection fist');
@@ -80,4 +88,25 @@ export class TagRepository implements ITagRepository {
     }
     return words;
   };
+
+  removeWordFromTag(
+    tagRxId: string,
+    wordRxId: string,
+  ): RxDocumentPromise<ITag> {
+    const query = this.Tag.findOne().where('rxId').eq(tagRxId);
+    return query.update({
+      $pullAll: {
+        wordIds: [wordRxId],
+      },
+    });
+  }
+
+  addWordToTag(tagRxId: string, wordRxId: string): RxDocumentPromise<ITag> {
+    const query = this.Tag.findOne().where('rxId').eq(tagRxId);
+    return query.update({
+      $push: {
+        wordIds: wordRxId,
+      },
+    });
+  }
 }
