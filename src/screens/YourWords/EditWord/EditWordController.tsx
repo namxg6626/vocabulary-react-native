@@ -5,6 +5,7 @@ import {
   WordDetailScreen,
 } from '@screens/WordDetail/WordDetailScreen';
 import {ManageWordsScreenProps} from '@navigation/ManageWords';
+import get from 'lodash/get';
 
 export type EditWordControllerProps = ManageWordsScreenProps<'EditWord'>;
 
@@ -13,9 +14,13 @@ export class EditWordController extends WordDetailController {
     super(props as any);
   }
 
-  protected get navigation() {
+  get navigation() {
     return this.props
       .navigation as unknown as EditWordControllerProps['navigation'];
+  }
+
+  afterUpdate() {
+    return get(this.route, 'params.afterUpdate', () => null);
   }
 
   handleSubmit = async (formValue: WordDetailForm) => {
@@ -30,9 +35,8 @@ export class EditWordController extends WordDetailController {
           title: 'Updated!',
           status: 'success',
         });
-        this.navigation.navigate('YourWords', {
-          tagRxId: initialValue?.tagRxId || '',
-        });
+        this.afterUpdate();
+        this.navigation.navigate('YourWords');
       }
 
       return hasResult;

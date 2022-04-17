@@ -5,7 +5,9 @@ export type ManageWordsParamList = {
   YourWords?: {
     tagRxId: string;
   };
-  EditWord?: MainStackParamList['AddNewWord'];
+  EditWord?: MainStackParamList['AddNewWord'] & {
+    afterUpdate?: () => void;
+  };
 };
 
 export type ManageWordsScreenProps<

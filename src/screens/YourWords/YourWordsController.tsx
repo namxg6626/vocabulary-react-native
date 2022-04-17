@@ -1,5 +1,4 @@
 import React from 'react';
-import {Subject} from 'rxjs';
 import {ManageWordsScreenProps} from '@navigation/index';
 import {WordService} from '@core/modules/word/word.service';
 import {IWordService} from '@core/modules/word/inferfaces/word-service.interface';
@@ -24,10 +23,9 @@ export class YourWordsController extends React.Component<
   YourWordsProps,
   YourWordsState
 > {
-  updateCurrentTab$ = new Subject<void>();
-
   wordService: IWordService;
   tagService: ITagService;
+  currentTagRxId = '';
   state = {
     words: [],
     tags: [],
@@ -50,15 +48,6 @@ export class YourWordsController extends React.Component<
   async componentDidMount() {
     await this.getAllWords();
     await this.getAllTags();
-  }
-
-  componentDidUpdate(prevProps: Readonly<YourWordsProps>) {
-    const currentTagRxId = this.route.params?.tagRxId;
-    const prevTagRxId = prevProps.route.params?.tagRxId;
-
-    if (currentTagRxId !== prevTagRxId) {
-      this.getWordsByTag(currentTagRxId || '');
-    }
   }
 
   getAllWords = async () => {
@@ -105,10 +94,16 @@ export class YourWordsController extends React.Component<
     }
   };
 
+  handleTagChange = (tagRxId: string) => {
+    this.currentTagRxId = tagRxId;
+    return this.getWordsByTag(tagRxId);
+  };
+
   handlePenPress = (item: IWord) => {
     this.navigation.navigate('EditWord', {
       actionLabel: 'Edit',
       initialValue: item,
+      afterUpdate: () => this.getWordsByTag(this.currentTagRxId),
     });
   };
 
@@ -117,7 +112,7 @@ export class YourWordsController extends React.Component<
       <YourWordsScreen
         {...this.state}
         onDeleteWord={this.deleteWord}
-        onTabChange={this.getWordsByTag}
+        onTabChange={this.handleTagChange}
         onPenPress={this.handlePenPress}
       />
     );
