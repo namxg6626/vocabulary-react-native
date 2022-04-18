@@ -8,12 +8,18 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const SPACING = widthPercentageToDP(3);
 
-export const PracticeScreen: React.FC<{}> = () => {
+interface PracticeScreenProps {
+  onFlashcardPress: () => void;
+}
+
+export const PracticeScreen: React.FC<PracticeScreenProps> = ({
+  onFlashcardPress,
+}) => {
   return (
     <Screen>
       <VStack space={SPACING}>
         <PracticeItem
-          onPress={() => console.log('white')}
+          onPress={onFlashcardPress}
           name={'Flashcard'}
           description={'Let you review and memorize your words'}
           icon={

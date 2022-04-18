@@ -4,6 +4,7 @@ import {PracticeParamList} from '@navigation/Practice/Practice.type';
 import {Platform} from 'react-native';
 import {AppHeader} from '@components/AppHeader';
 import {PracticeController} from '@screens/Practice/PracticeController';
+import {FlashcardController} from '@screens/Practice/Flashcard/FlashcardController';
 
 const Stack = createNativeStackNavigator<PracticeParamList>();
 
@@ -25,6 +26,11 @@ export const PracticeStack = () => {
         name={'Practice'}
         options={{title: 'Practice'}}
         component={PracticeController}
+      />
+      <Stack.Screen
+        name={'Flashcard'}
+        options={{title: 'Flashcard'}}
+        component={FlashcardController}
       />
     </Stack.Navigator>
   );

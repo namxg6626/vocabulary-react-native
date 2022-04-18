@@ -1,7 +1,10 @@
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 export interface PracticeParamList {
-  Flashcard: undefined;
+  Flashcard: {
+    tagName: string;
+    numberOfWords: number;
+  };
   Practice: undefined;
   [key: string]: any;
 }
