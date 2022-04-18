@@ -1,2 +1,2 @@
-export * from './ManageWords';
+export * from './ManageWordsStack';
 export * from './MainStack';

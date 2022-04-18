@@ -7,8 +7,8 @@ import {WordDetailController} from '@screens/WordDetail/WordDetailController';
 import {YourTagsController} from '@screens/YourTags/YourTagsController';
 import {AppHeader} from '@components/AppHeader';
 import {MainStackParamList} from '@navigation/MainStack/MainStack.type';
-import {ManageWordsStack} from '@navigation/ManageWords/ManageWords';
-import {PracticeStack} from '@navigation/Practice';
+import {ManageWordsStack} from '@navigation/ManageWordsStack/ManageWordsStack';
+import {PracticeStack} from '@navigation/PracticeStack';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 

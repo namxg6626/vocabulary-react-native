@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {PracticeParamList} from '@navigation/Practice/Practice.type';
+import {PracticeParamList} from '@navigation/PracticeStack/PracticeStack.type';
 import {Platform} from 'react-native';
 import {AppHeader} from '@components/AppHeader';
 import {PracticeController} from '@screens/Practice/PracticeController';

@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ManageWordsParamList} from '@navigation/ManageWords/ManageWords.type';
+import {ManageWordsParamList} from '@navigation/ManageWordsStack/ManageWordsStack.type';
 import {YourWordsController} from '@screens/YourWords/YourWordsController';
 import {EditWordController} from '@screens/YourWords/EditWord/EditWordController';
 import {Platform} from 'react-native';

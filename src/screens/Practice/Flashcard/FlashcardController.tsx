@@ -1,5 +1,5 @@
 import React from 'react';
-import {PracticeScreenProps} from '@navigation/Practice';
+import {PracticeScreenProps} from '@navigation/PracticeStack';
 import {FlashcardScreen} from '@screens/Practice/Flashcard/FlashcardScreen';
 
 interface FlashcardControllerProps extends PracticeScreenProps<'Flashcard'> {}

@@ -4,7 +4,7 @@ import {
   WordDetailForm,
   WordDetailScreen,
 } from '@screens/WordDetail/WordDetailScreen';
-import {ManageWordsScreenProps} from '@navigation/ManageWords';
+import {ManageWordsScreenProps} from '@navigation/ManageWordsStack';
 import get from 'lodash/get';
 
 export type EditWordControllerProps = ManageWordsScreenProps<'EditWord'>;

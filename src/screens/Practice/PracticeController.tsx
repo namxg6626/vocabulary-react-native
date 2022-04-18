@@ -1,6 +1,6 @@
 import React from 'react';
 import {PracticeScreen} from '@screens/Practice/PracticeScreen';
-import {PracticeScreenProps} from '@navigation/Practice';
+import {PracticeScreenProps} from '@navigation/PracticeStack';
 import {ITagService} from '@core/modules/tag/interfaces/tag-service.interface';
 import {TagService} from '@core/modules/tag/tag.service';
 
