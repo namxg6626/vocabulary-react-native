@@ -12,6 +12,7 @@ export type MainStackParamList = {
   };
   ManageWords: undefined;
   YourTags: undefined;
+  PracticeStack: undefined;
 };
 
 export type MainStackScreenProps<

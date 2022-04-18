@@ -8,6 +8,7 @@ import {YourTagsController} from '@screens/YourTags/YourTagsController';
 import {AppHeader} from '@components/AppHeader';
 import {MainStackParamList} from '@navigation/MainStack/MainStack.type';
 import {ManageWordsStack} from '@navigation/ManageWords/ManageWords';
+import {PracticeStack} from '@navigation/Practice';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -63,6 +64,11 @@ export const MainStack = () => {
           }}
           name="YourTags"
           component={YourTagsController}
+        />
+        <Stack.Screen
+          name={'PracticeStack'}
+          options={{headerShown: false}}
+          component={PracticeStack}
         />
       </Stack.Navigator>
     </>

@@ -114,6 +114,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
           </HStack>
           <HStack space={SPACING} alignItems="stretch">
             <LargeColorizedButton
+              onPress={() => navigation.push('PracticeStack')}
               $bgColor={Colors.beanRed}
               $textContent1="Pratice"
               $textContent2="games"
