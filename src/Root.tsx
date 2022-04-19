@@ -8,17 +8,19 @@
  * @format
  */
 
+import 'react-native-reanimated';
 import React from 'react';
+import 'react-native-get-random-values';
 import {NativeBaseProvider, Text, Toast, Box} from 'native-base';
 import {ApolloProvider} from '@apollo/client';
 import {NavigationContainer} from '@react-navigation/native';
+import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 
 import {MainStack} from '@navigation/MainStack/MainStack';
 import {apolloClient} from '../apollo.client';
 import {theme} from '@theme/index';
 
 import {IMessageService} from '@core/modules/message/message-service.interface';
-import 'react-native-get-random-values';
 import {MessageService} from '@core/modules/message/message.service';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Subscription} from 'rxjs';
@@ -110,4 +112,5 @@ class Root extends React.Component<RootProps, RootState> {
   }
 }
 
-export default Root;
+export default gestureHandlerRootHOC(Root);
+// export default Root;

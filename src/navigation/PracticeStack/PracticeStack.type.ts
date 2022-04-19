@@ -1,9 +1,10 @@
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {IWord} from '@core/modules/word/inferfaces/word.interface';
 
 export interface PracticeParamList {
   Flashcard: {
     tagName: string;
-    numberOfWords: number;
+    words: IWord[];
   };
   Practice: undefined;
   [key: string]: any;

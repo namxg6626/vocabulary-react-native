@@ -22,13 +22,13 @@ export class FlashcardController extends React.Component<
   }
 
   setupTitle() {
-    const {tagName, numberOfWords} = this.route.params;
+    const {tagName, words} = this.route.params;
     this.navigation.setOptions({
-      title: `${tagName} (${numberOfWords})`,
+      title: `${tagName} (${words.length})`,
     });
   }
 
   render() {
-    return <FlashcardScreen />;
+    return <FlashcardScreen words={this.route.params.words} />;
   }
 }

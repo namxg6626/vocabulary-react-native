@@ -6,3 +6,4 @@ export * from './Input';
 export * from './Empty';
 export * from './PressableIcon';
 export * from './ItemActions';
+export * from './Modal';
