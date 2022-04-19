@@ -59,7 +59,7 @@ export const YourTagsScreen: React.FC<YourTagsScreenProps> = ({
   };
 
   return (
-    <Screen headerContent={'Tags'}>
+    <Screen>
       <TagModal
         header={'New tag'}
         isOpen={modalNames.includes(ModalName.ADD_NEW_TAG)}
