@@ -4,7 +4,7 @@ import {PracticeParamList} from '@navigation/PracticeStack/PracticeStack.type';
 import {Platform} from 'react-native';
 import {AppHeader} from '@components/AppHeader';
 import {PracticeController} from '@screens/Practice/PracticeController';
-import {FlashcardController} from '@screens/Practice/Flashcard/FlashcardController';
+import {FlashcardController} from '@screens/Flashcard/FlashcardController';
 
 const Stack = createNativeStackNavigator<PracticeParamList>();
 
