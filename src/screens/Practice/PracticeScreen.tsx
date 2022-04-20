@@ -8,13 +8,14 @@ import {Colors} from '@theme/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import tinycolor from 'tinycolor2';
-import {Subject} from 'rxjs';
-import {first} from 'rxjs/operators';
+import noop from 'lodash/noop';
 
 const SPACING = widthPercentageToDP(3);
 
+type NullableTag = ITag | null;
+
 interface PracticeScreenProps {
-  onFlashcardEmitTag: (tag: ITag | null) => void;
+  onFlashcardTagChange: (tag: ITag | null) => void;
   tags: ITag[];
 }
 
@@ -26,26 +27,29 @@ export class PracticeScreen extends React.Component<
   PracticeScreenProps,
   PracticeScreenState
 > {
-  tagRxId$ = new Subject<ITag | null>();
-
   state = {
     isModalShown: false,
   };
 
-  componentWillUnmount() {
-    this.tagRxId$.complete();
-  }
-
-  handleFlashcardPress = () => {
+  openModal = () => {
     this.setState({isModalShown: true});
-    this.tagRxId$.pipe(first()).subscribe(tag => {
-      this.props.onFlashcardEmitTag(tag);
-      this.closeModal();
-    });
   };
 
   closeModal = () => {
     this.setState({isModalShown: false});
+    this._handleTagPress = noop;
+  };
+
+  handleFlashcardPress = () => {
+    this.openModal();
+    this._handleTagPress = this.props.onFlashcardTagChange;
+  };
+
+  _handleTagPress: (tag: NullableTag) => void = noop;
+
+  handleTagPress = (tag: NullableTag) => {
+    this._handleTagPress(tag);
+    this.closeModal();
   };
 
   render() {
@@ -68,7 +72,7 @@ export class PracticeScreen extends React.Component<
               <TouchableHighlight
                 style={styles.touchableHighLight}
                 underlayColor={underlayColor}
-                onPress={() => this.tagRxId$.next(null)}>
+                onPress={() => this.handleTagPress(null)}>
                 <Text>All Words</Text>
               </TouchableHighlight>
 
@@ -77,7 +81,7 @@ export class PracticeScreen extends React.Component<
                   key={t.rxId}
                   style={styles.touchableHighLight}
                   underlayColor={underlayColor}
-                  onPress={() => this.tagRxId$.next(t)}>
+                  onPress={() => this.handleTagPress(t)}>
                   <Text>{t.name}</Text>
                 </TouchableHighlight>
               ))}

@@ -57,7 +57,7 @@ export class PracticeController extends React.Component<
     }
   };
 
-  handleFlashcardEmitTag = async (tag: ITag | null) => {
+  handleFlashcardTagChange = async (tag: ITag | null) => {
     let words: RxDocument<IWord>[];
     if (tag) {
       words = await this.tagService.getWordsByTag(tag.rxId);
@@ -74,7 +74,7 @@ export class PracticeController extends React.Component<
     return (
       <PracticeScreen
         tags={this.state.tags}
-        onFlashcardEmitTag={this.handleFlashcardEmitTag}
+        onFlashcardTagChange={this.handleFlashcardTagChange}
       />
     );
   }
