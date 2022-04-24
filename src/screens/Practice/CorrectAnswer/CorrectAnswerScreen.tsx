@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {TouchableHighlight, StyleSheet} from 'react-native';
 import {Text, HStack, VStack, Box} from 'native-base';
 import {Screen} from '@components/Screen';
 import {Colors} from '@theme/colors';
@@ -18,7 +19,68 @@ interface CorrectAnswerScreenProps {
   questions: Question[];
 }
 
-export const CorrectAnswerScreen: React.FC<CorrectAnswerScreenProps> = () => {
+export const CorrectAnswerScreen: React.FC<CorrectAnswerScreenProps> = ({
+  questions,
+}) => {
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [numberOfCorrect, setNumberOfCorrect] = useState(0);
+  const [numberOfIncorrect, setNumberOfIncorrect] = useState(0);
+  const [incorrectAnswerIndex, setIncorrectAnswerIndex] = useState(-1);
+  const [shouldHighlightIncorrect, setShouldHighlightIncorrect] =
+    useState(false);
+  const [shouldHighlightCorrect, setShouldHighlightCorrect] = useState(false);
+
+  const currentQuestion = questions[questionIndex];
+
+  const nextQuestion = (delay: number) => {
+    const handleNextQuestion = () => {
+      if (questionIndex === questions.length - 1) {
+        return;
+      }
+
+      resetAnswerState();
+      setQuestionIndex(v => v + 1);
+    };
+
+    setTimeout(handleNextQuestion, delay);
+  };
+
+  const handleAnswerPress = (answerIndex: number, isCorrectAnswer: boolean) => {
+    const isHighlighting = shouldHighlightCorrect || shouldHighlightIncorrect;
+    if (isHighlighting) {
+      return;
+    }
+
+    if (isCorrectAnswer) {
+      handleCorrectAnswerPress(answerIndex);
+    } else {
+      handleIncorrectAnswerPress(answerIndex);
+    }
+    nextQuestion(1000);
+  };
+
+  const handleCorrectAnswerPress = (_answerIndex: number) => {
+    setShouldHighlightCorrect(true);
+    setNumberOfCorrect(v => v + 1);
+  };
+
+  const handleIncorrectAnswerPress = (answerIndex: number) => {
+    setIncorrectAnswerIndex(answerIndex);
+    setShouldHighlightIncorrect(true);
+    setShouldHighlightCorrect(true);
+    setNumberOfIncorrect(v => v + 1);
+  };
+
+  const resetAnswerState = () => {
+    setShouldHighlightCorrect(false);
+    setShouldHighlightIncorrect(false);
+    setIncorrectAnswerIndex(-1);
+  };
+
+  if (!currentQuestion) {
+    return null;
+  }
+
   return (
     <Screen>
       <HStack
@@ -26,66 +88,70 @@ export const CorrectAnswerScreen: React.FC<CorrectAnswerScreenProps> = () => {
         space={SPACING}
         borderBottomWidth={0.2}
         borderColor={Colors.textSecondary}>
-        <Text flex={1}>10/75</Text>
-        <Text>Correct: 5</Text>
-        <Text>Incorrect: 5</Text>
+        <Text flex={1}>
+          {questionIndex + 1}/{questions.length}
+        </Text>
+        <Text>
+          Correct: {numberOfCorrect}/{questions.length}
+        </Text>
+        <Text>
+          Incorrect: {numberOfIncorrect}/{questions.length}
+        </Text>
       </HStack>
       <VStack flex={1} justifyContent={'center'}>
         <HStack flex={1} alignItems={'center'} justifyContent={'center'}>
           <Text textAlign={'center'} fontWeight={'700'} fontSize={'2xl'}>
-            {'Bản năng'}
+            {currentQuestion.correctAnswer.meaning}
           </Text>
         </HStack>
         <HStack flex={1} justifyContent={'space-around'} flexWrap={'wrap'}>
-          <Box width={'50%'} p={1}>
-            <Box
-              h={MAX_ANSWER_HEIGHT}
-              padding={4}
-              borderWidth={1}
-              backgroundColor={Colors.limedSpruce}
-              borderColor={Colors.lightningYellow}
-              borderRadius={'md'}>
-              <Text textAlign={'center'}>
-                instinct aodsjfoiasj aldsjf;lkasjdf;kasjf; alkdsjf;klasjdfk
-              </Text>
-            </Box>
-          </Box>
-          <Box width={'50%'} p={1}>
-            <Box
-              h={MAX_ANSWER_HEIGHT}
-              padding={4}
-              backgroundColor={Colors.limedSpruce}
-              borderColor={Colors.charcoalGray}
-              borderRadius={'md'}>
-              <Text textAlign={'center'}>instinct</Text>
-            </Box>
-          </Box>
-          <Box width={'50%'} p={1}>
-            <Box
-              h={MAX_ANSWER_HEIGHT}
-              padding={4}
-              borderWidth={1}
-              backgroundColor={Colors.limedSpruce}
-              borderColor={Colors.charcoalGray}
-              borderRadius={'md'}>
-              <Text textAlign={'center'}>
-                instinct aodsjfoiasj aldsjf;lkasjdf;kasjf; alkdsjf;klasjdfk
-              </Text>
-            </Box>
-          </Box>
-          <Box width={'50%'} p={1}>
-            <Box
-              h={MAX_ANSWER_HEIGHT}
-              padding={4}
-              borderWidth={1}
-              backgroundColor={Colors.limedSpruce}
-              borderColor={Colors.charcoalGray}
-              borderRadius={'md'}>
-              <Text textAlign={'center'}>instinct</Text>
-            </Box>
-          </Box>
+          {currentQuestion.answers.map((answer, i) => {
+            const isCorrectAnswer =
+              answer.rxId === currentQuestion.correctAnswer.rxId;
+
+            const isPressedIncorrectAnswer = incorrectAnswerIndex === i;
+
+            const shouldHighlight =
+              (shouldHighlightCorrect && isCorrectAnswer) ||
+              (shouldHighlightIncorrect && isPressedIncorrectAnswer);
+
+            const shouldHighlightAsCorrect =
+              isCorrectAnswer && shouldHighlightCorrect;
+
+            return (
+              <Box key={answer.rxId} width={'50%'} p={1}>
+                <TouchableHighlight
+                  onPress={() => {
+                    handleAnswerPress(i, isCorrectAnswer);
+                  }}
+                  underlayColor={Colors.gumental}
+                  activeOpacity={0.5}
+                  style={styles.touchableAnswer}>
+                  <Box
+                    h={MAX_ANSWER_HEIGHT}
+                    padding={4}
+                    borderRadius={6}
+                    borderWidth={shouldHighlight ? 2 : 0}
+                    backgroundColor={Colors.limedSpruce}
+                    borderColor={
+                      shouldHighlightAsCorrect
+                        ? Colors.parisGreen
+                        : Colors.beanRed
+                    }>
+                    <Text textAlign={'center'}>{answer.word}</Text>
+                  </Box>
+                </TouchableHighlight>
+              </Box>
+            );
+          })}
         </HStack>
       </VStack>
     </Screen>
   );
 };
+
+const styles = StyleSheet.create({
+  touchableAnswer: {
+    borderRadius: 6,
+  },
+});
