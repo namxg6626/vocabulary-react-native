@@ -86,8 +86,10 @@ export class PracticeController extends React.Component<
     if (words.length < 4) {
       this.messageService.pushMessage({
         title: 'Not enough number of word',
-        description: 'This tag must has at least 4 words',
+        description:
+          'You have to add at least 4 words to this tag to use this function',
         status: 'error',
+        duration: 5000,
       });
       return;
     }

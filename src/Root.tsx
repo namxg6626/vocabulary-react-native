@@ -69,7 +69,7 @@ class Root extends React.Component<RootProps, RootState> {
       });
       setTimeout(() => {
         Toast.closeAll();
-      }, 2000);
+      }, message.duration || 2000);
     });
   }
 
