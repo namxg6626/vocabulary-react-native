@@ -30,7 +30,7 @@ export const PracticeItem: React.FC<PracticeItemProps> = ({
         colors={colors}>
         <HStack space={widthPercentageToDP(0.5)}>
           <Box style={{transform: [{translateY: 4}]}}>{icon}</Box>
-          <Box>
+          <Box flex={1}>
             <Text fontSize={'xl'} fontWeight={'600'}>
               {name}
             </Text>

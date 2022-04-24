@@ -9,13 +9,15 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {ITag} from '@core/modules/tag/interfaces/tag.interface';
 import tinycolor from 'tinycolor2';
 import noop from 'lodash/noop';
+import {Nullable} from '@utils/types';
 
 const SPACING = widthPercentageToDP(3);
 
-type NullableTag = ITag | null;
+type NullableTag = Nullable<ITag>;
 
 interface PracticeScreenProps {
-  onFlashcardTagChange: (tag: ITag | null) => void;
+  onFlashcardTagChange: (tag: NullableTag) => void;
+  onCorrectAnswerTagChange: (tag: NullableTag) => void;
   tags: ITag[];
 }
 
@@ -43,6 +45,11 @@ export class PracticeScreen extends React.Component<
   handleFlashcardPress = () => {
     this.openModal();
     this._handleTagPress = this.props.onFlashcardTagChange;
+  };
+
+  handleCorrectAnswerPress = () => {
+    this.openModal();
+    this._handleTagPress = this.props.onCorrectAnswerTagChange;
   };
 
   _handleTagPress: (tag: NullableTag) => void = noop;
@@ -102,6 +109,19 @@ export class PracticeScreen extends React.Component<
                 />
               }
               colors={[Colors.beanRed, Colors.lightningYellow]}
+            />
+            <PracticeItem
+              onPress={this.handleCorrectAnswerPress}
+              name={'Correct answer'}
+              description={'Given meaning and select the correct \nanswer'}
+              icon={
+                <MaterialCommunityIcons
+                  name={'note-text-outline'}
+                  color={'white'}
+                  size={24}
+                />
+              }
+              colors={[Colors.parisGreen, Colors.limedSpruce]}
             />
           </VStack>
         </Screen>

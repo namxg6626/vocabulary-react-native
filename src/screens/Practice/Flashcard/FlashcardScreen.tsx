@@ -8,7 +8,7 @@ import {IWord} from '@core/modules/word/inferfaces/word.interface';
 import 'react-native-reanimated';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Colors} from '@theme/colors';
-import {MemorizedFlashcardCarousel} from '@screens/Flashcard/components/FlashcardCarousel';
+import {MemorizedFlashcardCarousel} from '@screens/Practice/Flashcard/components/FlashcardCarousel';
 import {ICarouselInstance} from 'react-native-reanimated-carousel';
 
 interface FlashcardScreenProps {

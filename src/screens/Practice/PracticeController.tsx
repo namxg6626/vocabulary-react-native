@@ -9,10 +9,14 @@ import {IWordService} from '@core/modules/word/inferfaces/word-service.interface
 import {WordService} from '@core/modules/word/word.service';
 import get from 'lodash/get';
 import {RxDocument} from 'rxdb';
+import {Nullable} from '@utils/types';
+import {IMessageService} from '@core/modules/message/message-service.interface';
+import {MessageService} from '@core/modules/message/message.service';
 
 interface PracticeControllerProps extends PracticeScreenProps<'Practice'> {
   tagService?: ITagService;
   wordService?: IWordService;
+  messageService?: IMessageService;
 }
 
 interface PracticeControllerState {
@@ -25,6 +29,7 @@ export class PracticeController extends React.Component<
 > {
   tagService: ITagService;
   wordService: IWordService;
+  messageService: IMessageService;
   state = {
     tags: [],
   };
@@ -33,6 +38,7 @@ export class PracticeController extends React.Component<
     super(props);
     this.tagService = props.tagService || new TagService();
     this.wordService = props.wordService || new WordService();
+    this.messageService = props.messageService || new MessageService();
   }
 
   componentDidMount() {
@@ -57,14 +63,36 @@ export class PracticeController extends React.Component<
     }
   };
 
-  handleFlashcardTagChange = async (tag: ITag | null) => {
+  getWords = async (tag: Nullable<ITag>) => {
     let words: RxDocument<IWord>[];
     if (tag) {
       words = await this.tagService.getWordsByTag(tag.rxId);
     } else {
       words = await this.wordService.getAllDocuments();
     }
+    return words;
+  };
+
+  handleFlashcardTagChange = async (tag: Nullable<ITag>) => {
+    const words = await this.getWords(tag);
     this.navigation.push('Flashcard', {
+      tagName: get(tag, 'name', 'All Words'),
+      words: words.map(w => w.toJSON()),
+    });
+  };
+
+  handleCorrectAnswerTagChange = async (tag: Nullable<ITag>) => {
+    const words = await this.getWords(tag);
+    if (words.length < 4) {
+      this.messageService.pushMessage({
+        title: 'Not enough number of word',
+        description: 'This tag must has at least 4 words',
+        status: 'error',
+      });
+      return;
+    }
+
+    this.navigation.push('CorrectAnswer', {
       tagName: get(tag, 'name', 'All Words'),
       words: words.map(w => w.toJSON()),
     });
@@ -75,6 +103,7 @@ export class PracticeController extends React.Component<
       <PracticeScreen
         tags={this.state.tags}
         onFlashcardTagChange={this.handleFlashcardTagChange}
+        onCorrectAnswerTagChange={this.handleCorrectAnswerTagChange}
       />
     );
   }

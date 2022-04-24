@@ -21,6 +21,7 @@ export const Screen: FC<IScreenProps> = ({
     <Box
       px={widthPercentageToDP(6)}
       backgroundColor={Colors.gumental}
+      pt={4}
       flex={1}
       {...BoxProps}>
       <StatusBar hidden={!enableStatusBar} backgroundColor={Colors.gumental} />
