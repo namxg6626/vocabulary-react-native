@@ -15,12 +15,19 @@ export interface Question {
   correctAnswer: IWord;
 }
 
+export interface CompleteData {
+  numberOfCorrect: number;
+  numberOfIncorrect: number;
+}
+
 interface CorrectAnswerScreenProps {
   questions: Question[];
+  onComplete: (completeData: CompleteData) => void;
 }
 
 export const CorrectAnswerScreen: React.FC<CorrectAnswerScreenProps> = ({
   questions,
+  onComplete,
 }) => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [numberOfCorrect, setNumberOfCorrect] = useState(0);
@@ -32,17 +39,13 @@ export const CorrectAnswerScreen: React.FC<CorrectAnswerScreenProps> = ({
 
   const currentQuestion = questions[questionIndex];
 
-  const nextQuestion = (delay: number) => {
-    const handleNextQuestion = () => {
-      if (questionIndex === questions.length - 1) {
-        return;
-      }
+  const nextQuestion = () => {
+    if (questionIndex === questions.length - 1) {
+      return;
+    }
 
-      resetAnswerState();
-      setQuestionIndex(v => v + 1);
-    };
-
-    setTimeout(handleNextQuestion, delay);
+    resetAnswerState();
+    setQuestionIndex(v => v + 1);
   };
 
   const handleAnswerPress = (answerIndex: number, isCorrectAnswer: boolean) => {
@@ -56,7 +59,17 @@ export const CorrectAnswerScreen: React.FC<CorrectAnswerScreenProps> = ({
     } else {
       handleIncorrectAnswerPress(answerIndex);
     }
-    nextQuestion(1000);
+
+    setTimeout(() => {
+      if (questionIndex === questions.length - 1) {
+        onComplete({
+          numberOfCorrect,
+          numberOfIncorrect,
+        });
+      } else {
+        nextQuestion();
+      }
+    }, 1000);
   };
 
   const handleCorrectAnswerPress = (_answerIndex: number) => {

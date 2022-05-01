@@ -4,7 +4,6 @@ import {Screen} from '@components/Screen';
 import {CustomInput} from '@components/Input';
 import {CustomButton} from '@components/Button';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
-import {Colors} from '@theme/colors';
 import {WordDto} from '@core/modules/word/dtos/word.dto';
 import {validationSchema} from '@screens/WordDetail/validation-schema';
 import {Controller, useForm} from 'react-hook-form';
@@ -61,17 +60,20 @@ export const WordDetailScreen: FC<WordDetailProps> = ({
     });
   };
 
+  // TODO attach image to the word
   const renderImageField = () => {
-    return (
-      <Box
-        rounded={'xl'}
-        borderStyle={'dashed'}
-        borderWidth={1}
-        borderColor={Colors.textSecondary}
-        h={widthPercentageToDP(50)}
-        w="full"
-      />
-    );
+    return null;
+
+    // return (
+    //   <Box
+    //     rounded={'xl'}
+    //     borderStyle={'dashed'}
+    //     borderWidth={1}
+    //     borderColor={Colors.textSecondary}
+    //     h={widthPercentageToDP(50)}
+    //     w="full"
+    //   />
+    // );
   };
 
   const renderFields = () => (

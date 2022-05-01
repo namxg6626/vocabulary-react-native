@@ -6,12 +6,14 @@ import {
 } from '@screens/Practice/CorrectAnswer/CorrectAnswerScreen';
 import {IWord} from '@core/modules/word/inferfaces/word.interface';
 import _ from 'lodash';
+import {CompleteScreen} from '@screens/Practice/components/CompleteScreen';
 
 interface CorrectAnswerControllerProps
   extends PracticeScreenProps<'CorrectAnswer'> {}
 
 interface CorrectAnswerControllerState {
   questions: Question[];
+  isShownComplete: boolean;
 }
 
 export class CorrectAnswerController extends React.Component<
@@ -19,7 +21,8 @@ export class CorrectAnswerController extends React.Component<
   CorrectAnswerControllerState
 > {
   state = {
-    questions: [],
+    questions: [] as Question[],
+    isShownComplete: false,
   };
 
   get navigation() {
@@ -44,6 +47,27 @@ export class CorrectAnswerController extends React.Component<
   setupQuestions = () => {
     const questions = this.makeQuestions(this.route.params.words);
     this.setState({questions});
+  };
+
+  showComplete = () => {
+    this.setState(() => ({
+      isShownComplete: true,
+    }));
+  };
+
+  hideComplete = () => {
+    this.setState(() => ({
+      isShownComplete: false,
+    }));
+  };
+
+  handleComplete = () => {
+    this.showComplete();
+  };
+
+  handlePracticeAgain = () => {
+    this.hideComplete();
+    this.setupQuestions();
   };
 
   makeAnswers = (words: IWord[], correctAnswerIndex: number) => {
@@ -76,19 +100,32 @@ export class CorrectAnswerController extends React.Component<
   };
 
   makeQuestions = (words: IWord[]): Question[] => {
-    return words.reduce((questions, word, i, originalArray) => {
-      const newQuestion: Question = {
-        correctAnswer: word,
-        description: word.meaning,
-        answers: _.shuffle([word, ...this.makeAnswers(originalArray, i)]),
-      };
+    const questionsResult = words.reduce(
+      (questions, word, i, originalArray) => {
+        const newQuestion: Question = {
+          correctAnswer: word,
+          description: word.meaning,
+          answers: _.shuffle([word, ...this.makeAnswers(originalArray, i)]),
+        };
 
-      questions.push(newQuestion);
-      return questions;
-    }, [] as Question[]);
+        questions.push(newQuestion);
+        return questions;
+      },
+      [] as Question[],
+    );
+    return _.shuffle(questionsResult);
   };
 
   render() {
-    return <CorrectAnswerScreen questions={this.state.questions} />;
+    if (this.state.isShownComplete) {
+      return <CompleteScreen onPracticeAgain={this.handlePracticeAgain} />;
+    }
+
+    return (
+      <CorrectAnswerScreen
+        onComplete={this.handleComplete}
+        questions={this.state.questions}
+      />
+    );
   }
 }
