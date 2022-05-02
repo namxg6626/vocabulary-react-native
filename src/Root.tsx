@@ -17,7 +17,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 
 import {MainStack} from '@navigation/MainStack/MainStack';
-import {apolloClient} from '../apollo.client';
+import {apolloClient} from './apollo.client';
 import {theme} from '@theme/index';
 
 import {IMessageService} from '@core/modules/message/message-service.interface';
