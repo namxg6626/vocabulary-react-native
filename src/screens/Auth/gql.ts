@@ -23,3 +23,27 @@ export const SIGN_UP = gql`
     }
   }
 `;
+
+interface User {
+  username: string;
+  email: string;
+}
+
+export interface AuthData {
+  user: User;
+  token: string;
+}
+
+export interface SignInVars {
+  signInInput: {
+    email: string;
+    password: string;
+  };
+}
+
+export interface SignUpVars {
+  signUpInput: {
+    email: string;
+    password: string;
+  };
+}

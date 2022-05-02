@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {AuthScreen} from '@screens/Auth';
 import {DashboardScreen} from '@screens/Dashboard/DashboardScreen';
 import {Platform} from 'react-native';
 import {WordDetailController} from '@screens/WordDetail/WordDetailController';
@@ -9,6 +8,7 @@ import {AppHeader} from '@components/AppHeader';
 import {MainStackParamList} from '@navigation/MainStack/MainStack.type';
 import {ManageWordsStack} from '@navigation/ManageWordsStack/ManageWordsStack';
 import {PracticeStack} from '@navigation/PracticeStack';
+import {AuthController} from '@screens/Auth/AuthController';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -32,7 +32,7 @@ export const MainStack = () => {
             headerShown: false,
           }}
           name="Auth"
-          component={AuthScreen}
+          component={AuthController}
         />
         <Stack.Screen
           options={{

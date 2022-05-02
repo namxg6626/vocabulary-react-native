@@ -1,19 +1,16 @@
 import React from 'react';
-import {FC, useState, useEffect} from 'react';
+import {FC, useState} from 'react';
 import {Text, Box, HStack, Heading, VStack, Pressable} from 'native-base';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {Screen, CustomButton} from '@components/index';
 import {LargeInput} from './components/LargeInput';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Colors} from '@theme/colors';
-import {SIGN_IN, SIGN_UP} from './query';
-import {useMutation} from '@apollo/client';
 import {useForm, Controller} from 'react-hook-form';
-import * as validationSchema from './validationSchema';
+import * as validationSchema from './validation-schema';
 import {yupResolver} from '@hookform/resolvers/yup';
-import type {MainStackScreenProps} from '@navigation/index';
 
-type AuthFormValues = {
+export type AuthFormValue = {
   email: string;
   password: string;
   repassword?: string;
@@ -21,42 +18,36 @@ type AuthFormValues = {
 
 type AuthMode = 'signin' | 'signup';
 
-export const AuthScreen: FC<MainStackScreenProps<'Auth'>> = ({navigation}) => {
+interface AuthScreenProps {
+  onSignInSubmit: (value: AuthFormValue) => void;
+  onSignUpSubmit: (value: AuthFormValue) => void;
+  onGoToDashboardAsGuest: () => void;
+}
+
+export const AuthScreen: FC<AuthScreenProps> = ({
+  onSignInSubmit,
+  onSignUpSubmit,
+  onGoToDashboardAsGuest,
+}) => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('signin');
-
-  const [signInMutation, {data: signInData}] = useMutation(SIGN_IN);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [signUpMutation, {data: _signUpDate}] = useMutation(SIGN_UP);
 
   const {
     control,
     formState: {errors},
     handleSubmit: hookFormHandleSubmit,
-  } = useForm<AuthFormValues>({
+  } = useForm<AuthFormValue>({
     resolver: yupResolver(
       authMode === 'signin' ? validationSchema.signIn : validationSchema.signUp,
     ),
   });
 
-  const handleSubmit = (value: AuthFormValues) => {
+  const handleSubmit = (value: AuthFormValue) => {
     delete value.repassword;
     if (authMode === 'signin') {
-      signInMutation({
-        variables: {
-          signInInput: value,
-        },
-        onCompleted: data => {
-          console.log(data);
-        },
-        onError: error => {
-          console.error(error);
-        },
-      });
+      onSignInSubmit(value);
     } else {
-      signUpMutation({
-        variables: {signUpInput: value},
-      });
+      onSignUpSubmit(value);
     }
   };
 
@@ -69,12 +60,8 @@ export const AuthScreen: FC<MainStackScreenProps<'Auth'>> = ({navigation}) => {
   };
 
   const gotoDashboardAsGuest = () => {
-    navigation.navigate('Dashboard', {isGuest: true});
+    onGoToDashboardAsGuest();
   };
-
-  useEffect(() => {
-    console.log(signInData);
-  }, [signInData]);
 
   const renderGuestRow = () => {
     return (
@@ -96,10 +83,10 @@ export const AuthScreen: FC<MainStackScreenProps<'Auth'>> = ({navigation}) => {
     );
   };
 
-  const renderWellcome = () => {
+  const renderWelcome = () => {
     return (
       <Box mb={widthPercentageToDP(authMode === 'signin' ? 16 : 8)}>
-        <Heading size={'3xl'}>Wellcome</Heading>
+        <Heading size={'3xl'}>Welcome</Heading>
         <Text color={Colors.textSecondary} fontSize={'xl'}>
           Are you ready to learn
         </Text>
@@ -239,7 +226,7 @@ export const AuthScreen: FC<MainStackScreenProps<'Auth'>> = ({navigation}) => {
   return (
     <Screen safeArea>
       {renderGuestRow()}
-      {renderWellcome()}
+      {renderWelcome()}
       {renderFields()}
       {renderButtons()}
     </Screen>
