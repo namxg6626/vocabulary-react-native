@@ -17,7 +17,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 
 import {MainStack} from '@navigation/MainStack/MainStack';
-import {apolloClient} from './apollo.client';
+import {client} from '@core/apollo/client';
 import {theme} from '@theme/index';
 
 import {IMessageService} from '@core/modules/message/message-service.interface';
@@ -90,7 +90,7 @@ class Root extends React.Component<RootProps, RootState> {
 
   render() {
     return (
-      <ApolloProvider client={apolloClient}>
+      <ApolloProvider client={client}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
             <MainStack />
