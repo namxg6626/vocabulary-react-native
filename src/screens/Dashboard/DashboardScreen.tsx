@@ -4,12 +4,9 @@ import {Box, HStack, Text, VStack} from 'native-base';
 import {StyleSheet, View} from 'react-native';
 import type {LayoutChangeEvent} from 'react-native';
 import {Screen} from '@components/Screen';
-
-import type {MainStackScreenProps} from '@navigation/index';
 import {Colors} from '@theme/colors';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {HelloBG} from './components/HelloBG';
-import _ from 'lodash';
 import {LargeColorizedButton} from './components/LargeColorizedButton';
 import AntdIcons from 'react-native-vector-icons/AntDesign';
 import FontisoIcons from 'react-native-vector-icons/Fontisto';
@@ -23,14 +20,23 @@ const QUOTE = {
 
 const SPACING = widthPercentageToDP(5);
 
-export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
-  route,
-  navigation,
+interface DashboardScreenProps {
+  username: string;
+  onAddNewWordPress: () => void;
+  onManageYourWordsPress: () => void;
+  onPracticeGamesPress: () => void;
+  onManageYourTagsPress: () => void;
+}
+
+export const DashboardScreen: FC<DashboardScreenProps> = ({
+  username,
+  onAddNewWordPress,
+  onManageYourTagsPress,
+  onManageYourWordsPress,
+  onPracticeGamesPress,
 }) => {
   const [helloWidth, setHelloWidth] = useState(0);
   const helloHeight = (180 / 320) * helloWidth;
-  const isGuest = _.get(route, 'params.isGuest', false);
-  const username = isGuest ? 'Guest' : 'Lenam';
 
   const styles = StyleSheet.create({
     hellobgWrapper: {
@@ -84,7 +90,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
         <VStack space={SPACING}>
           <HStack space={SPACING} alignItems="stretch">
             <LargeColorizedButton
-              onPress={() => navigation.push('AddNewWord')}
+              onPress={onAddNewWordPress}
               $bgColor={Colors.parisGreen}
               $textContent1="Add new"
               $textContent2="word"
@@ -97,7 +103,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
               }
             />
             <LargeColorizedButton
-              onPress={() => navigation.push('ManageWords')}
+              onPress={onManageYourWordsPress}
               $bgColor={tinycolor(Colors.lightningYellow)
                 .darken(5)
                 .toRgbString()}
@@ -114,7 +120,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
           </HStack>
           <HStack space={SPACING} alignItems="stretch">
             <LargeColorizedButton
-              onPress={() => navigation.push('PracticeStack')}
+              onPress={onPracticeGamesPress}
               $bgColor={Colors.beanRed}
               $textContent1="Pratice"
               $textContent2="games"
@@ -127,7 +133,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
               }
             />
             <LargeColorizedButton
-              onPress={() => navigation.push('YourTags')}
+              onPress={onManageYourTagsPress}
               $bgColor={Colors.pastelOrange}
               $textContent1="Manage your"
               $textContent2="tags"
@@ -146,7 +152,7 @@ export const DashboardScreen: FC<MainStackScreenProps<'Dashboard'>> = ({
   };
 
   return (
-    <Screen safeArea enableStatusBar>
+    <Screen safeArea>
       <VStack space={SPACING}>
         {renderHello()}
         {renderButtons()}

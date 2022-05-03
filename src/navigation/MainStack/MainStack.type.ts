@@ -5,6 +5,7 @@ export type MainStackParamList = {
   Auth: undefined;
   Dashboard: {
     isGuest?: boolean;
+    username?: string;
   };
   AddNewWord?: {
     actionLabel: string;

@@ -29,9 +29,18 @@ interface User {
   email: string;
 }
 
-export interface AuthData {
-  user: User;
-  token: string;
+export interface SignInData {
+  signin: {
+    user: User;
+    token: string;
+  };
+}
+
+export interface SignUpData {
+  signup: {
+    user: User;
+    token: string;
+  };
 }
 
 export interface SignInVars {

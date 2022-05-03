@@ -1,9 +1,16 @@
 import React, {useEffect} from 'react';
 import {useMutation} from '@apollo/client';
-import {MainStackScreenProps, MainStackParamList} from '@navigation/MainStack';
+import {MainStackParamList, MainStackScreenProps} from '@navigation/MainStack';
 import {AuthFormValue, AuthScreen} from './AuthScreen';
 import {Loader} from '@components/Loader';
-import {AuthData, SIGN_IN, SIGN_UP, SignInVars, SignUpVars} from './gql';
+import {
+  SIGN_IN,
+  SIGN_UP,
+  SignInData,
+  SignInVars,
+  SignUpData,
+  SignUpVars,
+} from './gql';
 import {IAsyncStorageService} from '@core/modules/async-storage/async-storage-service.interface';
 import {AsyncStorageService} from '@core/modules/async-storage/async-storage.service';
 import {AsyncStorageKeyEnum} from '@core/modules/async-storage/async-storage.enum';
@@ -19,11 +26,11 @@ export const AuthController: React.FC<AuthControllerProps> = ({
   asyncStorageService = new AsyncStorageService(),
 }) => {
   const [signIn, {data: signInData, loading: isSignInLoading}] = useMutation<
-    AuthData,
+    SignInData,
     SignInVars
   >(SIGN_IN);
   const [signUp, {data: signUpData, loading: isSignUpLoading}] = useMutation<
-    AuthData,
+    SignUpData,
     SignUpVars
   >(SIGN_UP);
 
@@ -36,6 +43,11 @@ export const AuthController: React.FC<AuthControllerProps> = ({
       },
       onCompleted: data => {
         asyncStorageService?.trySetObject(AsyncStorageKeyEnum.AUTH_DATA, data);
+        asyncStorageService?.trySetObject(
+          AsyncStorageKeyEnum.TOKEN,
+          data.signin.token,
+        );
+        gotoDashboard({username: data.signin.user.email});
       },
       onError: error => {
         console.error(error);
@@ -58,16 +70,22 @@ export const AuthController: React.FC<AuthControllerProps> = ({
   };
 
   const retrieveUserAndGotoDashboard = async () => {
-    const user = await asyncStorageService?.tryGetObject(
-      AsyncStorageKeyEnum.AUTH_DATA,
-    );
-    if (user) {
-      gotoDashboard({});
+    const storedSignInData =
+      await asyncStorageService?.tryGetObject<SignInData>(
+        AsyncStorageKeyEnum.AUTH_DATA,
+      );
+    if (storedSignInData) {
+      gotoDashboard({username: storedSignInData.signin.user.email});
     }
   };
 
+  function clearAsyncStorage() {
+    return asyncStorageService?.removeAll();
+  }
+
   useEffect(() => {
-    retrieveUserAndGotoDashboard();
+    // retrieveUserAndGotoDashboard();
+    clearAsyncStorage();
   }, []);
 
   return (

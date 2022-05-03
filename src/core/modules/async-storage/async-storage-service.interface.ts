@@ -8,4 +8,5 @@ export interface IAsyncStorageService {
   set: (key: AsyncStorageKeyEnum, value: string) => Promise<void>;
   trySetObject: <T = any>(key: AsyncStorageKeyEnum, value: T) => Promise<void>;
   tryGetObject: <T = any>(key: AsyncStorageKeyEnum) => Promise<Nullable<T>>;
+  removeAll: () => Promise<void>;
 }

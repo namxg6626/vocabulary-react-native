@@ -24,4 +24,9 @@ export class AsyncStorageService implements IAsyncStorageService {
     }
     return null;
   }
+
+  removeAll = async (): Promise<void> => {
+    const allKeys = await AsyncStorage.getAllKeys();
+    await AsyncStorage.multiRemove(allKeys);
+  };
 }
