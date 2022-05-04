@@ -41,7 +41,9 @@ interface RootState {
 
 class Root extends React.Component<RootProps, RootState> {
   messageService: IMessageService;
-  subscription!: Subscription;
+  messageSubscription!: Subscription;
+  private toastIds: any[] = [];
+
   state = {
     ready: false,
   };
@@ -57,20 +59,31 @@ class Root extends React.Component<RootProps, RootState> {
   }
 
   componentWillUnmount() {
-    this.subscription.unsubscribe();
+    this.messageSubscription.unsubscribe();
   }
 
   subscribeMessage() {
-    this.subscription = this.messageService.getMessage().subscribe(message => {
-      Toast.show({
-        ...message,
-        shadow: '8',
-        mx: widthPercentageToDP(10),
+    this.messageSubscription = this.messageService
+      .getMessage()
+      .subscribe(message => {
+        const toastId = Toast.show({
+          ...message,
+          shadow: '8',
+          mx: widthPercentageToDP(10),
+        });
+
+        this.toastIds.push(toastId);
+
+        // maximum 2 toasts at the same time
+        if (this.toastIds.length > 2) {
+          Toast.close(this.toastIds.shift());
+        }
+
+        setTimeout(() => {
+          Toast.close(toastId);
+          this.toastIds = this.toastIds.filter(id => id !== toastId);
+        }, message.duration || 2000);
       });
-      setTimeout(() => {
-        Toast.closeAll();
-      }, message.duration || 2000);
-    });
   }
 
   handleInitRxDatabase = () => {
