@@ -14,22 +14,26 @@ import {
 import {IAsyncStorageService} from '@core/modules/async-storage/async-storage-service.interface';
 import {AsyncStorageService} from '@core/modules/async-storage/async-storage.service';
 import {AsyncStorageKeyEnum} from '@core/modules/async-storage/async-storage.enum';
+import {IMessageService} from '@core/modules/message/message-service.interface';
+import {MessageService} from '@core/modules/message/message.service';
 
 type DashboardParams = MainStackParamList['Dashboard'];
 
 interface AuthControllerProps extends MainStackScreenProps<'Auth'> {
   asyncStorageService?: IAsyncStorageService;
+  messageService?: IMessageService;
 }
 
 export const AuthController: React.FC<AuthControllerProps> = ({
   navigation,
   asyncStorageService = new AsyncStorageService(),
+  messageService = new MessageService(),
 }) => {
-  const [signIn, {data: signInData, loading: isSignInLoading}] = useMutation<
+  const [signIn, {loading: isSignInLoading}] = useMutation<
     SignInData,
     SignInVars
   >(SIGN_IN);
-  const [signUp, {data: signUpData, loading: isSignUpLoading}] = useMutation<
+  const [signUp, {loading: isSignUpLoading}] = useMutation<
     SignUpData,
     SignUpVars
   >(SIGN_UP);
@@ -49,16 +53,37 @@ export const AuthController: React.FC<AuthControllerProps> = ({
         );
         gotoDashboard({username: data.signin.user.email});
       },
-      onError: error => {
-        console.error(error);
+      onError: e => {
+        messageService?.pushMessage({
+          title: 'Sign in error',
+          status: 'error',
+          description: e.message,
+          duration: 4000,
+        });
       },
     });
   };
 
   const handleSignUp = (value: AuthFormValue) => {
-    // signUpMutation({
-    //   variables: {signUpInput: value},
-    // });
+    signUp({
+      variables: {signUpInput: value},
+      onCompleted: data => {
+        asyncStorageService?.trySetObject(AsyncStorageKeyEnum.AUTH_DATA, data);
+        asyncStorageService?.trySetObject(
+          AsyncStorageKeyEnum.TOKEN,
+          data.signup.token,
+        );
+        gotoDashboard({username: data.signup.user.email});
+      },
+      onError: e => {
+        messageService?.pushMessage({
+          title: 'Sign up error',
+          status: 'error',
+          description: e.message,
+          duration: 4000,
+        });
+      },
+    });
   };
 
   const handleGoToDashboardAsGuest = () => {
