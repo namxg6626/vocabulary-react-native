@@ -8,7 +8,9 @@ import {AppCollections} from './rxdb.types';
 import {wordSchema} from '@core/modules/word/word.schema';
 import {tagSchema} from '@core/modules/tag/schemas/tag.schema';
 import {
+  pullTagsQueryBuilder,
   pullWordsQueryBuilder,
+  pushTagQueryBuilder,
   pushWordsQueryBuilder,
 } from '@core/database/replication';
 import {AsyncStorageService} from '@core/modules/async-storage/async-storage.service';
@@ -67,11 +69,18 @@ export async function syncGraphQL() {
 
   isAddedCollections$.subscribe(isAdded => {
     if (isAdded) {
-      rxDB.word.syncGraphQL({
+      const commonOptions = {
         url: 'http://localhost:3000/graphql',
         headers: {
           authorization: 'Bearer ' + token,
         },
+        deletedFlag: 'deleted',
+        live: true,
+        liveInterval: 1000 * 60 * 5,
+      };
+
+      rxDB.word.syncGraphQL({
+        ...commonOptions,
         push: {
           queryBuilder: pushWordsQueryBuilder,
           modifier: doc => ({
@@ -85,9 +94,23 @@ export async function syncGraphQL() {
         pull: {
           queryBuilder: pullWordsQueryBuilder,
         },
-        deletedFlag: 'deleted',
-        live: true,
-        liveInterval: 1000 * 60 * 5,
+      });
+
+      rxDB.tag.syncGraphQL({
+        ...commonOptions,
+        push: {
+          queryBuilder: pushTagQueryBuilder,
+          modifier: doc => ({
+            rxId: doc.rxId,
+            name: doc.name,
+            wordIds: doc.wordIds,
+            updatedAt: doc.updatedAt,
+            deleted: !!doc._deleted,
+          }),
+        },
+        pull: {
+          queryBuilder: pullTagsQueryBuilder,
+        },
       });
     }
   });
