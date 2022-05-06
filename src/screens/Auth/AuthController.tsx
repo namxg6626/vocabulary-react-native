@@ -47,10 +47,7 @@ export const AuthController: React.FC<AuthControllerProps> = ({
       },
       onCompleted: data => {
         asyncStorageService?.trySetObject(AsyncStorageKeyEnum.AUTH_DATA, data);
-        asyncStorageService?.trySetObject(
-          AsyncStorageKeyEnum.TOKEN,
-          data.signin.token,
-        );
+        asyncStorageService?.set(AsyncStorageKeyEnum.TOKEN, data.signin.token);
         gotoDashboard({username: data.signin.user.email});
       },
       onError: e => {
@@ -69,10 +66,7 @@ export const AuthController: React.FC<AuthControllerProps> = ({
       variables: {signUpInput: value},
       onCompleted: data => {
         asyncStorageService?.trySetObject(AsyncStorageKeyEnum.AUTH_DATA, data);
-        asyncStorageService?.trySetObject(
-          AsyncStorageKeyEnum.TOKEN,
-          data.signup.token,
-        );
+        asyncStorageService?.set(AsyncStorageKeyEnum.TOKEN, data.signup.token);
         gotoDashboard({username: data.signup.user.email});
       },
       onError: e => {
@@ -109,8 +103,8 @@ export const AuthController: React.FC<AuthControllerProps> = ({
   }
 
   useEffect(() => {
-    // retrieveUserAndGotoDashboard();
-    clearAsyncStorage();
+    retrieveUserAndGotoDashboard();
+    // clearAsyncStorage();
   }, []);
 
   return (
