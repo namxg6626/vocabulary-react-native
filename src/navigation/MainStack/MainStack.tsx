@@ -7,7 +7,6 @@ import {AppHeader} from '@components/AppHeader';
 import {MainStackParamList} from '@navigation/MainStack/MainStack.type';
 import {ManageWordsStack} from '@navigation/ManageWordsStack/ManageWordsStack';
 import {PracticeStack} from '@navigation/PracticeStack';
-import {AuthController} from '@screens/Auth/AuthController';
 import {DashboardController} from '@screens/Dashboard/DashboardController';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -25,14 +24,14 @@ export const MainStack = () => {
           />
         ),
       }}
-      initialRouteName="Auth">
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="Auth"
-        component={AuthController}
-      />
+      initialRouteName="Dashboard">
+      {/*<Stack.Screen*/}
+      {/*  options={{*/}
+      {/*    headerShown: false,*/}
+      {/*  }}*/}
+      {/*  name="Auth"*/}
+      {/*  component={AuthController}*/}
+      {/*/>*/}
       <Stack.Screen
         options={{
           headerShown: false,

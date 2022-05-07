@@ -25,7 +25,7 @@ import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Subscription} from 'rxjs';
 import {initRxDatabaseAsync} from '@core/database/rxdb';
 import {Colors} from '@theme/colors';
-import {HomeTab} from '@navigation/HomeTab/HomeTab';
+import {AuthStack} from '@navigation/AuthStack/AuthStack';
 
 // make things are identical on almost devices
 (Text as any).defaultProps = {};
@@ -106,7 +106,7 @@ class Root extends React.Component<RootProps, RootState> {
       <ApolloProvider client={client}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
-            <HomeTab />
+            <AuthStack />
             <Box
               display={this.state.ready ? 'none' : undefined}
               position={'absolute'}
