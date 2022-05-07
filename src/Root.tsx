@@ -11,7 +11,7 @@
 import 'react-native-reanimated';
 import React from 'react';
 import 'react-native-get-random-values';
-import {NativeBaseProvider, Text, Toast, Box} from 'native-base';
+import {NativeBaseProvider, Text, Toast} from 'native-base';
 import {ApolloProvider} from '@apollo/client';
 import {NavigationContainer} from '@react-navigation/native';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
@@ -24,8 +24,8 @@ import {MessageService} from '@core/modules/message/message.service';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Subscription} from 'rxjs';
 import {initRxDatabaseAsync} from '@core/database/rxdb';
-import {Colors} from '@theme/colors';
 import {AuthStack} from '@navigation/AuthStack/AuthStack';
+import {Loader} from '@components/Loader';
 
 // make things are identical on almost devices
 (Text as any).defaultProps = {};
@@ -36,7 +36,7 @@ type RootProps = {
 };
 
 interface RootState {
-  ready: boolean;
+  loadingRxDB: boolean;
 }
 
 class Root extends React.Component<RootProps, RootState> {
@@ -45,7 +45,7 @@ class Root extends React.Component<RootProps, RootState> {
   private toastIds: any[] = [];
 
   state = {
-    ready: false,
+    loadingRxDB: true,
   };
 
   constructor(props: RootProps) {
@@ -89,7 +89,7 @@ class Root extends React.Component<RootProps, RootState> {
   handleInitRxDatabase = () => {
     initRxDatabaseAsync()
       .then(() => {
-        this.setState({ready: true});
+        this.setState({loadingRxDB: false});
       })
       .catch(e => {
         this.messageService.pushMessage({
@@ -106,18 +106,8 @@ class Root extends React.Component<RootProps, RootState> {
       <ApolloProvider client={client}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
+            <Loader title={'Preparing...'} loading={this.state.loadingRxDB} />
             <AuthStack />
-            <Box
-              display={this.state.ready ? 'none' : undefined}
-              position={'absolute'}
-              backgroundColor={Colors.charcoalGray}
-              top={0}
-              left={0}
-              height={'full'}
-              width={'full'}
-              opacity={0.3}
-              justifyContent={'center'}
-            />
           </NavigationContainer>
         </NativeBaseProvider>
       </ApolloProvider>
