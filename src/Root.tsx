@@ -23,9 +23,7 @@ import {IMessageService} from '@core/modules/message/message-service.interface';
 import {MessageService} from '@core/modules/message/message.service';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Subscription} from 'rxjs';
-import {initRxDatabaseAsync} from '@core/database/rxdb';
 import {AuthStack} from '@navigation/AuthStack/AuthStack';
-import {Loader} from '@components/Loader';
 
 // make things are identical on almost devices
 (Text as any).defaultProps = {};
@@ -55,7 +53,6 @@ class Root extends React.Component<RootProps, RootState> {
 
   componentDidMount() {
     this.subscribeMessage();
-    this.handleInitRxDatabase();
   }
 
   componentWillUnmount() {
@@ -86,27 +83,11 @@ class Root extends React.Component<RootProps, RootState> {
       });
   }
 
-  handleInitRxDatabase = () => {
-    initRxDatabaseAsync()
-      .then(() => {
-        this.setState({loadingRxDB: false});
-      })
-      .catch(e => {
-        this.messageService.pushMessage({
-          title: 'Error🥲',
-          status: 'error',
-          description: e.message,
-        });
-        throw e;
-      });
-  };
-
   render() {
     return (
       <ApolloProvider client={client}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
-            <Loader title={'Preparing...'} loading={this.state.loadingRxDB} />
             <AuthStack />
           </NavigationContainer>
         </NativeBaseProvider>

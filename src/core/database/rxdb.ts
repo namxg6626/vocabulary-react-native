@@ -1,4 +1,9 @@
-import {addRxPlugin, createRxDatabase, RxDatabase} from 'rxdb';
+import {
+  addRxPlugin,
+  createRxDatabase,
+  RxDatabase,
+  removeRxDatabase,
+} from 'rxdb';
 import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import SQLite from 'react-native-sqlite-2';
@@ -15,7 +20,6 @@ import {
 } from '@core/database/replication';
 import {AsyncStorageService} from '@core/modules/async-storage/async-storage.service';
 import {AsyncStorageKeyEnum} from '@core/modules/async-storage/async-storage.enum';
-import {BehaviorSubject} from 'rxjs';
 
 const SQLiteAdapter = SQLiteAdapterFactory(SQLite);
 
@@ -25,13 +29,13 @@ addRxPlugin(RxDBReplicationGraphQLPlugin);
 
 let rxDB: RxDatabase<AppCollections>;
 let isAddedCollections = false;
-const isAddedCollections$ = new BehaviorSubject<boolean>(false);
+const storage = getRxStoragePouch('react-native-sqlite');
 
 async function createRxDatabaseAsync() {
   // re-create RxDatabase by using the function below it not override existing data
   return await createRxDatabase<AppCollections>({
     name: 'mydatabase',
-    storage: getRxStoragePouch('react-native-sqlite'), // the name of your adapter,
+    storage, // the name of your adapter,
     ignoreDuplicate: false,
     multiInstance: false,
   });
@@ -57,7 +61,6 @@ export async function initRxDatabaseAsync() {
       },
     });
     isAddedCollections = true;
-    isAddedCollections$.next(true);
   }
 
   return rxDB;
@@ -67,51 +70,56 @@ export async function syncGraphQL() {
   const asyncStorageService = new AsyncStorageService();
   const token = await asyncStorageService.get(AsyncStorageKeyEnum.TOKEN);
 
-  isAddedCollections$.subscribe(isAdded => {
-    if (isAdded) {
-      const commonOptions = {
-        url: 'http://localhost:3000/graphql',
-        headers: {
-          authorization: 'Bearer ' + token,
-        },
-        deletedFlag: 'deleted',
-        live: true,
-        liveInterval: 1000 * 60 * 5,
-      };
+  if (isAddedCollections) {
+    const commonOptions = {
+      url: 'http://localhost:3000/graphql',
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
+      deletedFlag: 'deleted',
+      live: true,
+      liveInterval: 1000 * 60 * 5,
+    };
 
-      rxDB.word.syncGraphQL({
-        ...commonOptions,
-        push: {
-          queryBuilder: pushWordsQueryBuilder,
-          modifier: doc => ({
-            rxId: doc.rxId,
-            word: doc.word,
-            meaning: doc.meaning,
-            updatedAt: doc.updatedAt,
-            deleted: !!doc._deleted,
-          }),
-        },
-        pull: {
-          queryBuilder: pullWordsQueryBuilder,
-        },
-      });
+    rxDB.word.syncGraphQL({
+      ...commonOptions,
+      push: {
+        queryBuilder: pushWordsQueryBuilder,
+        modifier: doc => ({
+          rxId: doc.rxId,
+          word: doc.word,
+          meaning: doc.meaning,
+          updatedAt: doc.updatedAt,
+          deleted: !!doc._deleted,
+        }),
+      },
+      pull: {
+        queryBuilder: pullWordsQueryBuilder,
+      },
+    });
 
-      rxDB.tag.syncGraphQL({
-        ...commonOptions,
-        push: {
-          queryBuilder: pushTagQueryBuilder,
-          modifier: doc => ({
-            rxId: doc.rxId,
-            name: doc.name,
-            wordIds: doc.wordIds,
-            updatedAt: doc.updatedAt,
-            deleted: !!doc._deleted,
-          }),
-        },
-        pull: {
-          queryBuilder: pullTagsQueryBuilder,
-        },
-      });
-    }
-  });
+    rxDB.tag.syncGraphQL({
+      ...commonOptions,
+      push: {
+        queryBuilder: pushTagQueryBuilder,
+        modifier: doc => ({
+          rxId: doc.rxId,
+          name: doc.name,
+          wordIds: doc.wordIds,
+          updatedAt: doc.updatedAt,
+          deleted: !!doc._deleted,
+        }),
+      },
+      pull: {
+        queryBuilder: pullTagsQueryBuilder,
+      },
+    });
+  }
 }
+
+export const resetRxDB = async () => {
+  if (rxDB) {
+    await removeRxDatabase('mydatabase', storage);
+  }
+  return Promise.resolve();
+};

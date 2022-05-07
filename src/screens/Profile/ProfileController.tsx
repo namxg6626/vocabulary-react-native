@@ -8,12 +8,15 @@ import {AsyncStorageService} from '@core/modules/async-storage/async-storage.ser
 import {AsyncStorageKeyEnum} from '@core/modules/async-storage/async-storage.enum';
 import {ME, MeQueryResponse} from '@screens/Profile/gql';
 import {Loader} from '@components/Loader';
+import {resetRxDB} from '@core/database/rxdb';
+import {CommonActions} from '@react-navigation/native';
 
 interface ProfileControllerProps extends HomeTabScreenProps<'Profile'> {
   asyncStorageService?: IAsyncStorageService;
 }
 
 export const ProfileController: React.FC<ProfileControllerProps> = ({
+  navigation,
   asyncStorageService = new AsyncStorageService(),
 }) => {
   const [isGuest, setIsGuest] = useState(false);
@@ -34,6 +37,24 @@ export const ProfileController: React.FC<ProfileControllerProps> = ({
       .catch(showGuestContent);
   };
 
+  const resetNavigation = () => {
+    const resetAction = CommonActions.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'Auth',
+        },
+      ],
+    });
+    return navigation.dispatch(resetAction);
+  };
+
+  const handleLogout = async () => {
+    await resetRxDB();
+    await asyncStorageService?.removeAll();
+    resetNavigation();
+  };
+
   useEffect(() => {
     checkToken();
   }, []);
@@ -45,7 +66,7 @@ export const ProfileController: React.FC<ProfileControllerProps> = ({
   return (
     <>
       <Loader title={'Getting your info...'} loading={loading} />
-      <ProfileScreen user={data?.me} />
+      <ProfileScreen user={data?.me} onLogout={handleLogout} />
     </>
   );
 };

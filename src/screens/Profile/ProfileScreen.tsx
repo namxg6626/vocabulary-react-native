@@ -16,9 +16,13 @@ interface ProfileFormValue {
 
 interface ProfileScreenProps {
   user?: MeQueryResponse['me'];
+  onLogout: () => void;
 }
 
-export const ProfileScreen: React.FC<ProfileScreenProps> = ({user}) => {
+export const ProfileScreen: React.FC<ProfileScreenProps> = ({
+  user,
+  onLogout,
+}) => {
   const {control, reset} = useForm<ProfileFormValue>();
 
   useEffect(() => {
@@ -84,7 +88,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({user}) => {
           <Button py={3} rounded={'md'} colorScheme={'info'}>
             Change password
           </Button>
-          <Button py={3} rounded={'md'} colorScheme={'danger'}>
+          <Button
+            py={3}
+            rounded={'md'}
+            colorScheme={'danger'}
+            onPress={onLogout}>
             Logout
           </Button>
         </VStack>
