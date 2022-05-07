@@ -16,7 +16,6 @@ import {ApolloProvider} from '@apollo/client';
 import {NavigationContainer} from '@react-navigation/native';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 
-import {MainStack} from '@navigation/MainStack/MainStack';
 import {client} from '@core/apollo/client';
 import {theme} from '@theme/index';
 
@@ -26,6 +25,7 @@ import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Subscription} from 'rxjs';
 import {initRxDatabaseAsync} from '@core/database/rxdb';
 import {Colors} from '@theme/colors';
+import {HomeTab} from '@navigation/HomeTab/HomeTab';
 
 // make things are identical on almost devices
 (Text as any).defaultProps = {};
@@ -106,7 +106,7 @@ class Root extends React.Component<RootProps, RootState> {
       <ApolloProvider client={client}>
         <NativeBaseProvider theme={theme}>
           <NavigationContainer>
-            <MainStack />
+            <HomeTab />
             <Box
               display={this.state.ready ? 'none' : undefined}
               position={'absolute'}
