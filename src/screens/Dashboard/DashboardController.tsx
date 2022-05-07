@@ -28,7 +28,13 @@ export class DashboardController extends React.Component<
     const isLoggedIn = !isGuest;
 
     if (isLoggedIn) {
-      syncGraphQL();
+      syncGraphQL()
+        .then(() => {
+          console.log('GraphQL Synchronization started');
+        })
+        .catch(e => {
+          console.error('GraphQL Synchronization error', e);
+        });
     }
   }
 
