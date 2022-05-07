@@ -2,6 +2,7 @@ import {Observable, Subject} from 'rxjs';
 import {MessageDto} from '@core/modules/message/message.dto';
 import {IMessageService} from '@core/modules/message/message-service.interface';
 
+// TODO add logging type methods
 export class MessageService implements IMessageService {
   private static MessageSubject = new Subject<MessageDto>();
 
