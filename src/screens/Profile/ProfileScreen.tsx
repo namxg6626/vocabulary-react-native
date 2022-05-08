@@ -1,35 +1,46 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {VStack, Avatar, Center, FormControl, Button} from 'native-base';
 import {Screen} from '@components/Screen';
 import {Colors} from '@theme/colors';
 import {CustomInput} from '@components/Input';
 import {useForm, Controller} from 'react-hook-form';
 import {MeQueryResponse} from '@screens/Profile/gql';
+import {yesNoAlert} from '@utils/alert';
 
 const SPACING = 8;
 
-interface ProfileFormValue {
+export interface ProfileFormValue {
   username: string;
   email: string;
-  password: string;
 }
 
 interface ProfileScreenProps {
   user?: MeQueryResponse['me'];
   onLogout: () => void;
+  onSave: (value: ProfileFormValue) => void;
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   user,
   onLogout,
+  onSave,
 }) => {
-  const {control, reset} = useForm<ProfileFormValue>();
+  const [isFilled, setIsFilled] = useState(false);
+  const {control, reset, handleSubmit} = useForm<ProfileFormValue>();
+
+  const handleSaveProfile = (value: ProfileFormValue) => {
+    yesNoAlert('Are you sure?', 'Your profile will be saved', () => {
+      onSave(value);
+    });
+  };
 
   useEffect(() => {
-    if (user) {
+    if (user && !isFilled) {
       reset({...user});
+      setIsFilled(true);
     }
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isFilled]);
 
   return (
     <Screen safeArea>
@@ -82,7 +93,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
           </FormControl>
         </VStack>
         <VStack space={SPACING / 2}>
-          <Button py={3} rounded={'md'} colorScheme={'success'}>
+          <Button
+            py={3}
+            rounded={'md'}
+            colorScheme={'success'}
+            onPress={handleSubmit(handleSaveProfile)}>
             Save
           </Button>
           <Button py={3} rounded={'md'} colorScheme={'info'}>
