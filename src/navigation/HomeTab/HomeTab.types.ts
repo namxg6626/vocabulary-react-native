@@ -4,7 +4,7 @@ import {MainStackParamList} from '@navigation/MainStack';
 
 export type HomeTabParamList = {
   MainStack: NavigatorScreenParams<MainStackParamList>;
-  Profile: undefined;
+  ProfileStack: undefined;
 };
 
 export type HomeTabScreenProps<ScreenName extends keyof HomeTabParamList> =

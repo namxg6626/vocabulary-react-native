@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
-import {HomeTabScreenProps} from '@navigation/HomeTab/HomeTab.types';
 import {ProfileScreen, ProfileFormValue} from '@screens/Profile/ProfileScreen';
 import {GuestProfileScreen} from '@screens/Profile/GuestProfileScreen';
 import {IAsyncStorageService} from '@core/modules/async-storage/async-storage-service.interface';
@@ -10,16 +9,17 @@ import {IMessageService} from '@core/modules/message/message-service.interface';
 import {MessageService} from '@core/modules/message/message.service';
 import {
   ME,
+  UPDATE_PROFILE,
   MeQueryResponse,
   UpdateProfileMutationResponse,
   UpdateProfileMutationVars,
-  UPDATE_PROFILE,
 } from '@screens/Profile/gql';
 import {Loader} from '@components/Loader';
 import {resetRxDB} from '@core/database/rxdb';
 import {CommonActions} from '@react-navigation/native';
+import {ProfileStackScreenProps} from '@navigation/ProfileStack/ProfileStack.types';
 
-interface ProfileControllerProps extends HomeTabScreenProps<'Profile'> {
+interface ProfileControllerProps extends ProfileStackScreenProps<'Profile'> {
   asyncStorageService?: IAsyncStorageService;
   messageService?: IMessageService;
 }
@@ -90,6 +90,10 @@ export const ProfileController: React.FC<ProfileControllerProps> = ({
       .catch(e => messageService?.error(e.message));
   };
 
+  const handleChangePasswordPress = () => {
+    navigation.navigate('ChangePassword');
+  };
+
   if (isGuest) {
     return <GuestProfileScreen />;
   }
@@ -101,6 +105,7 @@ export const ProfileController: React.FC<ProfileControllerProps> = ({
         user={data?.me}
         onLogout={handleLogout}
         onSave={handleSaveProfile}
+        onChangePasswordPress={handleChangePasswordPress}
       />
     </>
   );

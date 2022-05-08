@@ -2,9 +2,9 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {HomeTabParamList} from './HomeTab.types';
 import {MainStack} from '@navigation/MainStack';
+import {ProfileStack} from '@navigation/ProfileStack/ProfileStack';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {Colors} from '@theme/colors';
-import {ProfileController} from '@screens/Profile/ProfileController';
 
 const ICON_SIZE = 18;
 const HomeBottomTab = createBottomTabNavigator<HomeTabParamList>();
@@ -38,8 +38,8 @@ export const HomeTab: React.FC = () => {
         }}
       />
       <HomeBottomTab.Screen
-        name={'Profile'}
-        component={ProfileController}
+        name={'ProfileStack'}
+        component={ProfileStack}
         options={{
           tabBarIcon: ({color}) => (
             <IonIcons size={ICON_SIZE} name={'person'} color={color} />

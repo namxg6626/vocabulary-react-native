@@ -18,12 +18,14 @@ interface ProfileScreenProps {
   user?: MeQueryResponse['me'];
   onLogout: () => void;
   onSave: (value: ProfileFormValue) => void;
+  onChangePasswordPress: () => void;
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   user,
   onLogout,
   onSave,
+  onChangePasswordPress,
 }) => {
   const [isFilled, setIsFilled] = useState(false);
   const {control, reset, handleSubmit} = useForm<ProfileFormValue>();
@@ -100,7 +102,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             onPress={handleSubmit(handleSaveProfile)}>
             Save
           </Button>
-          <Button py={3} rounded={'md'} colorScheme={'info'}>
+          <Button
+            py={3}
+            rounded={'md'}
+            colorScheme={'info'}
+            onPress={onChangePasswordPress}>
             Change password
           </Button>
           <Button
