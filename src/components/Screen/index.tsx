@@ -21,7 +21,7 @@ export const Screen: FC<IScreenProps> = ({
     <Box
       px={widthPercentageToDP(6)}
       backgroundColor={Colors.gumental}
-      pt={4}
+      py={4}
       flex={1}
       {...BoxProps}>
       <StatusBar hidden={!enableStatusBar} backgroundColor={Colors.gumental} />
@@ -32,7 +32,7 @@ export const Screen: FC<IScreenProps> = ({
       ) : (
         children
       )}
-      <Box pb={widthPercentageToDP(6)} />
+      {/*<Box pb={widthPercentageToDP(6)} />*/}
     </Box>
   );
 };

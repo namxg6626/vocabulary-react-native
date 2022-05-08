@@ -3,6 +3,7 @@ import {AsyncStorageKeyEnum} from './async-storage.enum';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Nullable} from '@utils/types';
 
+// TODO get and set implicitly parse to object if possible
 export class AsyncStorageService implements IAsyncStorageService {
   get = (key: AsyncStorageKeyEnum) => {
     return AsyncStorage.getItem(key);

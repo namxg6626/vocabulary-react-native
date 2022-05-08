@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useMutation} from '@apollo/client';
-import {MainStackParamList, MainStackScreenProps} from '@navigation/MainStack';
+import {MainStackParamList} from '@navigation/MainStack';
 import {AuthFormValue, AuthScreen} from './AuthScreen';
 import {Loader} from '@components/Loader';
 import {
@@ -10,26 +10,32 @@ import {
   SignInVars,
   SignUpData,
   SignUpVars,
+  UserData,
 } from './gql';
 import {IAsyncStorageService} from '@core/modules/async-storage/async-storage-service.interface';
 import {AsyncStorageService} from '@core/modules/async-storage/async-storage.service';
 import {AsyncStorageKeyEnum} from '@core/modules/async-storage/async-storage.enum';
+import {IMessageService} from '@core/modules/message/message-service.interface';
+import {MessageService} from '@core/modules/message/message.service';
+import {AuthStackScreenProp} from '@navigation/AuthStack/AuthStack.type';
 
 type DashboardParams = MainStackParamList['Dashboard'];
 
-interface AuthControllerProps extends MainStackScreenProps<'Auth'> {
+interface AuthControllerProps extends AuthStackScreenProp<'Auth'> {
   asyncStorageService?: IAsyncStorageService;
+  messageService?: IMessageService;
 }
 
 export const AuthController: React.FC<AuthControllerProps> = ({
   navigation,
   asyncStorageService = new AsyncStorageService(),
+  messageService = new MessageService(),
 }) => {
-  const [signIn, {data: signInData, loading: isSignInLoading}] = useMutation<
+  const [signIn, {loading: isSignInLoading}] = useMutation<
     SignInData,
     SignInVars
   >(SIGN_IN);
-  const [signUp, {data: signUpData, loading: isSignUpLoading}] = useMutation<
+  const [signUp, {loading: isSignUpLoading}] = useMutation<
     SignUpData,
     SignUpVars
   >(SIGN_UP);
@@ -41,41 +47,80 @@ export const AuthController: React.FC<AuthControllerProps> = ({
       variables: {
         signInInput: value,
       },
-      onCompleted: data => {
-        asyncStorageService?.trySetObject(AsyncStorageKeyEnum.AUTH_DATA, data);
-        asyncStorageService?.trySetObject(
+      onCompleted: async data => {
+        await asyncStorageService?.trySetObject(
+          AsyncStorageKeyEnum.USER_DATA,
+          data.signin.user,
+        );
+        await asyncStorageService?.set(
           AsyncStorageKeyEnum.TOKEN,
           data.signin.token,
         );
-        gotoDashboard({username: data.signin.user.email});
+        gotoDashboardAsUser(data.signin.user.username);
       },
-      onError: error => {
-        console.error(error);
+      onError: e => {
+        messageService?.pushMessage({
+          title: 'Sign in error',
+          status: 'error',
+          description: e.message,
+          duration: 4000,
+        });
       },
     });
   };
 
   const handleSignUp = (value: AuthFormValue) => {
-    // signUpMutation({
-    //   variables: {signUpInput: value},
-    // });
+    signUp({
+      variables: {signUpInput: value},
+      onCompleted: async data => {
+        await asyncStorageService?.trySetObject(
+          AsyncStorageKeyEnum.USER_DATA,
+          data.signup.user,
+        );
+        await asyncStorageService?.set(
+          AsyncStorageKeyEnum.TOKEN,
+          data.signup.token,
+        );
+        gotoDashboardAsUser(data.signup.user.username);
+      },
+      onError: e => {
+        messageService?.pushMessage({
+          title: 'Sign up error',
+          status: 'error',
+          description: e.message,
+          duration: 4000,
+        });
+      },
+    });
   };
 
-  const handleGoToDashboardAsGuest = () => {
+  const gotoDashboard = (dashboardParams: DashboardParams = {}) => {
+    navigation.navigate('HomeTab', {
+      screen: 'MainStack',
+      params: {
+        screen: 'Dashboard',
+        params: dashboardParams,
+      },
+    });
+  };
+
+  const gotoDashboardAsGuest = () => {
     gotoDashboard({isGuest: true});
   };
 
-  const gotoDashboard = (params: DashboardParams) => {
-    navigation.navigate('Dashboard', params);
+  const gotoDashboardAsUser = (username: string) => {
+    gotoDashboard({
+      isGuest: false,
+      username,
+    });
   };
 
-  const retrieveUserAndGotoDashboard = async () => {
-    const storedSignInData =
-      await asyncStorageService?.tryGetObject<SignInData>(
-        AsyncStorageKeyEnum.AUTH_DATA,
-      );
+  const tryRetrieveUserAndGotoDashboard = async () => {
+    const storedSignInData = await asyncStorageService?.tryGetObject<UserData>(
+      AsyncStorageKeyEnum.USER_DATA,
+    );
     if (storedSignInData) {
-      gotoDashboard({username: storedSignInData.signin.user.email});
+      gotoDashboardAsUser(storedSignInData.username);
     }
   };
 
@@ -84,22 +129,17 @@ export const AuthController: React.FC<AuthControllerProps> = ({
   }
 
   useEffect(() => {
-    // retrieveUserAndGotoDashboard();
-    clearAsyncStorage();
+    tryRetrieveUserAndGotoDashboard();
+    // clearAsyncStorage();
   }, []);
 
   return (
     <>
-      <Loader
-        title={'Processing...'}
-        indicatorColor={'white'}
-        textColor={'white'}
-        loading={isLoading}
-      />
+      <Loader title={'Processing...'} textColor={'white'} loading={isLoading} />
       <AuthScreen
         onSignInSubmit={handleSignIn}
         onSignUpSubmit={handleSignUp}
-        onGoToDashboardAsGuest={handleGoToDashboardAsGuest}
+        onGoToDashboardAsGuest={gotoDashboardAsGuest}
       />
     </>
   );

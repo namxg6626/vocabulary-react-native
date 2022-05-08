@@ -24,21 +24,21 @@ export const SIGN_UP = gql`
   }
 `;
 
-interface User {
+export interface UserData {
   username: string;
   email: string;
 }
 
 export interface SignInData {
   signin: {
-    user: User;
+    user: UserData;
     token: string;
   };
 }
 
 export interface SignUpData {
   signup: {
-    user: User;
+    user: UserData;
     token: string;
   };
 }

@@ -20,7 +20,10 @@ export class EditWordController extends WordDetailController {
   }
 
   afterUpdate() {
-    return get(this.route, 'params.afterUpdate', () => null);
+    const func = get(this.route, 'params.afterUpdate', () => null);
+    if (typeof func === 'function') {
+      func();
+    }
   }
 
   handleSubmit = async (formValue: WordDetailForm) => {

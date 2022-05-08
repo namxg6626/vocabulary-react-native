@@ -4,9 +4,7 @@ import {AsyncStorageKeyEnum} from '@core/modules/async-storage/async-storage.enu
 
 export const authLink = setContext(async (_, {headers}) => {
   const asyncStorageService = new AsyncStorageService();
-  const token = await asyncStorageService.tryGetObject(
-    AsyncStorageKeyEnum.TOKEN,
-  );
+  const token = await asyncStorageService.get(AsyncStorageKeyEnum.TOKEN);
   const newHeaders = {
     ...headers,
     'Content-Type': 'application/json',
