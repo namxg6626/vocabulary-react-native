@@ -1,4 +1,4 @@
 export enum AsyncStorageKeyEnum {
   TOKEN = 'TOKEN',
-  AUTH_DATA = 'AUTH_DATA',
+  USER_DATA = 'USER_DATA',
 }

@@ -10,6 +10,7 @@ import {
   SignInVars,
   SignUpData,
   SignUpVars,
+  UserData,
 } from './gql';
 import {IAsyncStorageService} from '@core/modules/async-storage/async-storage-service.interface';
 import {AsyncStorageService} from '@core/modules/async-storage/async-storage.service';
@@ -48,8 +49,8 @@ export const AuthController: React.FC<AuthControllerProps> = ({
       },
       onCompleted: async data => {
         await asyncStorageService?.trySetObject(
-          AsyncStorageKeyEnum.AUTH_DATA,
-          data,
+          AsyncStorageKeyEnum.USER_DATA,
+          data.signin.user,
         );
         await asyncStorageService?.set(
           AsyncStorageKeyEnum.TOKEN,
@@ -73,8 +74,8 @@ export const AuthController: React.FC<AuthControllerProps> = ({
       variables: {signUpInput: value},
       onCompleted: async data => {
         await asyncStorageService?.trySetObject(
-          AsyncStorageKeyEnum.AUTH_DATA,
-          data,
+          AsyncStorageKeyEnum.USER_DATA,
+          data.signup.user,
         );
         await asyncStorageService?.set(
           AsyncStorageKeyEnum.TOKEN,
@@ -115,12 +116,11 @@ export const AuthController: React.FC<AuthControllerProps> = ({
   };
 
   const tryRetrieveUserAndGotoDashboard = async () => {
-    const storedSignInData =
-      await asyncStorageService?.tryGetObject<SignInData>(
-        AsyncStorageKeyEnum.AUTH_DATA,
-      );
+    const storedSignInData = await asyncStorageService?.tryGetObject<UserData>(
+      AsyncStorageKeyEnum.USER_DATA,
+    );
     if (storedSignInData) {
-      gotoDashboardAsUser(storedSignInData.signin.user.username);
+      gotoDashboardAsUser(storedSignInData.username);
     }
   };
 
