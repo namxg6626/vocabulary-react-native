@@ -27,7 +27,7 @@ addPouchPlugin(SQLiteAdapter);
 addPouchPlugin(PouchDBAdapterHttp);
 addRxPlugin(RxDBReplicationGraphQLPlugin);
 
-let rxDB: RxDatabase<AppCollections>;
+let rxDB: RxDatabase<AppCollections> | null;
 let isAddedCollections = false;
 const storage = getRxStoragePouch('react-native-sqlite');
 
@@ -60,6 +60,7 @@ export async function initRxDatabaseAsync() {
         schema: tagSchema,
       },
     });
+
     isAddedCollections = true;
   }
 
@@ -70,7 +71,7 @@ export async function syncGraphQL() {
   const asyncStorageService = new AsyncStorageService();
   const token = await asyncStorageService.get(AsyncStorageKeyEnum.TOKEN);
 
-  if (isAddedCollections) {
+  if (isAddedCollections && rxDB) {
     const commonOptions = {
       url: 'http://localhost:3000/graphql',
       headers: {
@@ -119,7 +120,10 @@ export async function syncGraphQL() {
 
 export const resetRxDB = async () => {
   if (rxDB) {
+    await rxDB.destroy();
     await removeRxDatabase('mydatabase', storage);
+    rxDB = null;
+    isAddedCollections = false;
   }
   return Promise.resolve();
 };

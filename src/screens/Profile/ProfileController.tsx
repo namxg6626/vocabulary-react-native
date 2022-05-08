@@ -30,7 +30,9 @@ export const ProfileController: React.FC<ProfileControllerProps> = ({
   messageService = new MessageService(),
 }) => {
   const [isGuest, setIsGuest] = useState(false);
-  const {loading: meQueryLoading, data} = useQuery<MeQueryResponse>(ME);
+  const {loading: meQueryLoading, data} = useQuery<MeQueryResponse>(ME, {
+    fetchPolicy: 'no-cache',
+  });
   const [updateProfile, {loading: updateProfileMutationLoading}] = useMutation<
     UpdateProfileMutationResponse,
     UpdateProfileMutationVars
