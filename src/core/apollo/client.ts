@@ -3,5 +3,7 @@ import {authLink, httpLink, loggerLink} from './links';
 
 export const client = new ApolloClient({
   link: ApolloLink.from([authLink, loggerLink, httpLink]),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    addTypename: false,
+  }),
 });
